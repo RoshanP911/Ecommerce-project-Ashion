@@ -1,0 +1,60 @@
+{{> adminheader}}
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Table</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.5.0/css/bootstrap.min.css">
+    <!-- Custom CSS -->
+   <link rel="stylesheet" type="text/css"   href="/css/adminuserlist.css"> 
+  </head>
+  <body>
+    <div class="container">
+      <div class="table-container">
+        <h1>User Table</h1>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+             
+              <th>Action</th>
+            </tr>
+          </thead>
+       
+
+
+  <tbody>
+    {{#each users}}
+    <tr>
+ 
+      <td>{{this.name}}</td>
+      <td>{{this.email}}</td>
+   
+        <td>
+   
+        
+        {{#if this.is_blocked }}
+          
+             <a href="/admin/block/{{this._id}}" class="btn btn-success">Unblock</a>
+        {{else}}
+          
+             <a href="/admin/block/{{this._id}}" class="btn btn-delete">Block</a>
+        {{/if}} 
+        
+        </td>
+      
+    </tr>
+    {{/each}}
+  </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.5.0/js/bootstrap.min.js"></script>
+  </body>
+</html>

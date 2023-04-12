@@ -1,0 +1,96 @@
+{{> header}}
+
+
+<link rel="stylesheet" type="text/css" href="/css/orderhistory.css">
+
+
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Order History</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+</head>
+
+<body>
+  <div class="container">
+    <h1>Order History</h1>
+    <table id="myTable" class="table order-table">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Date Ordered</th>
+          <th>Status</th>
+          <th>Total</th>
+          <th>Payment Mode</th>
+          <th>Address</th>
+          <th>Details </th>
+
+        </tr>
+      </thead>
+      <tbody>
+        {{#each orderData}}
+        <tr>
+          <td>{{this._id}}</td>
+          <td>{{formatDate this.dateOrdered "DD-MM-YYY HH:mm:ss"}}</td>
+
+
+          {{#if (eq this.status "ordered")}}
+          <td class="status ordered">{{this.status}}</td>
+          {{else if (eq this.status "shipped")}}
+          <td class="status shipped">{{this.status}}</td>
+          {{else if (eq this.status "delivered")}}
+          <td class="status delivered">{{this.status}}</td>
+          {{else if (eq this.status "cancelled")}}
+          <td class="status cancelled">{{this.status}}</td>
+          {{else if (eq this.status "returned")}}
+          <td class="status returned">{{this.status}}</td>
+          {{/if}}
+
+
+          <td>Rs {{this.totalBill}}</td>
+          <td>{{this.paymentMode}}</td>
+          <td>
+            {{this.shippingAddress.address1}},<br>
+            {{this.shippingAddress.address2}},{{this.shippingAddress.city}},
+            <br>{{this.shippingAddress.state}}
+
+          </td>
+          <td><a href="http://127.0.0.1:3000/orderhistorydetails/?id={{this._id}}" class="btn btn-primary btn-sm ">View
+              Details</a></td>
+
+        </tr>
+        {{/each }}
+
+
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
+{{> footer}}
+
+
+</script>
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+
+
+<script>
+
+  $(document).ready(function () {
+    $('#myTable').DataTable({
+    "order": [[ 1, "desc" ]]
+  });
+  });
+</script>

@@ -1,0 +1,75 @@
+ {{!-- <h5 style="cursor: pointer;font-weight: bold;font-weight: bold; color: #333; padding: 10px; text-transform:uppercase"
+            onclick="catFilter('{{this._id}}')" data-category_name="{{this.name}}" class="myLink"
+            data-category="{{this._id}}">
+            {{this.name}}</h5> --}}
+
+
+            //FETCH CATEGORY
+const categoryFilter = async(req, res) => {
+ try {
+  console.log('am from cat filterrrrr  ')
+  const catId =  req.query.catid
+  const shopData = await Product.find({
+    category: catId,
+    is_blocked: false,
+  });
+  
+  res.json({shopData})  //response from api to fetch in json format
+
+} catch (error) {
+  console.log(error.message);
+}
+
+}
+
+.......................
+
+
+
+//SEARCH 
+const search=async(req,res)=>{
+  try {
+    let search=''
+      console.log(req.query.searchval);
+      search= req.query.searchval.trim()
+    const productData=await Product.find({is_blocked: false, $or:[{name:{$regex:'.*'+ search +'.*',$options:'i'}}]
+  })
+
+    console.log(productData,'llllllllllllllllloooooooool');
+    res.json({productData})
+
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ error: 'Server error' });
+  }
+}
+
+
+
+//SORT
+const sort = async (req, res) => {
+  try {
+    const id = req.query.sortid;
+    let productData;
+    if (id === 'aToZ') {
+      productData = await Product.find({ is_blocked: false }).sort({ name: 1 });
+    } else if (id === 'zToA') {
+      productData = await Product.find({ is_blocked: false }).sort({ name: -1 });
+    } else if (id==='price-low-to-high'){
+      productData = await Product.find({ is_blocked: false }).sort({ price: 1 });
+    } else if (id==='price-high-to-low'){
+      productData = await Product.find({ is_blocked: false }).sort({ price: -1 });
+    } else if (id==='default'){
+      productData = await Product.find({ is_blocked: false })
+    }
+    else {
+      return res.status(400).json({ error: 'Invalid sort parameter' });
+    } 
+
+    res.json({productData});
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+..........

@@ -1,0 +1,320 @@
+{{> header}}
+
+
+    <!-- Breadcrumb Begin -->
+    <div class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__links">
+                        <a href="/shop"><i class="fa fa-home"></i> Home</a>
+                        <span>Shopping cart</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Breadcrumb End -->
+    <link rel="stylesheet" href="/css/checkout.css">
+    <!-- Checkout Section Begin -->
+    <section class="checkout spad">
+        <div class="container">
+
+            <form action="" class="checkout__form" method="post">
+                <h3 style="padding-left:3%;">SHIPPING ADDRESS</h3>
+                <div class="row">
+                    <div class="col-lg-8">
+
+                        {{#each addressData}}
+                        <div class="col-md-10">
+                            <div class="bg-white card addresses-item mb-4 shadow p-3  bg-white rounded">
+                                <div class="gold-members p-4">
+
+                                    <div class="media">
+
+                                        <div class="mr-3"><i class="icofont-ui-home icofont-3x"></i></div>
+
+                                        <div class="media-body">
+                                            {{!-- <h6 class="mb-1 text-secondary">Home</h6> --}}
+                                            <p style="line-height: 5px;" class="text-black">
+
+                                                <tr style="line-height: 15px;">
+                                                    <input type="radio" name="address1" value="{{_id}}" required />
+                                                    <p style="line-height: 15px; font-size:large;">{{name}}</p>
+                                                    <p style="line-height: 15px; font-size:large;">{{mobile}}</p>
+                                                    <p style="line-height: 15px;font-size:large;">{{address1}}</p>
+                                                    <p style="line-height: 15px;font-size:large;">{{address2}}</p>
+                                                    <p style="line-height: 15px;font-size:large;">{{city}}</p>
+
+                                                    <p style="line-height: 15px;font-size:large;">{{state}}</p>
+                                                    <p style="line-height: 15px;font-size:large;">{{pin}}</p>
+                                                    <p style="line-height: 15px;font-size:large;">{{country}}</p>
+                                                </tr>
+
+                                                <a href="/editaddress?id={{this._id}}">Edit</a>
+                                                <a href="#" address-id="{{this._id}}"
+                                                    onclick="showDeleteConfirmation(event);"
+                                                    class="btn btn-delete">Delete</a>
+
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                        {{/each}}
+
+
+
+
+
+
+
+
+
+
+
+
+                        <br>
+
+                        <a href="http://127.0.0.1:3000/addaddress" class="btn btn-success">Add New Address</a>
+                        <br>
+
+
+
+                        <br>
+                        <h3>PAYMENT MODE</h3>
+
+                        <div class="payment-options;" style="font-size:large;">
+                            <input type="radio" id="cashondelivery" name="pay" value='cashondelivery' required>
+                            <label for="cash-on-delivery">Cash on Delivery</label><br>
+                            <input type="radio" id="razorpay" name="pay" value='razorpay'>
+                            <label for="razorpay">Razorpay</label><br>
+
+                        </div>
+                        <br>
+
+
+
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="checkout__order">
+                            <h5>Your order</h5>
+                            <div class="checkout__order__product">
+                                <ul>
+                                    <li>
+                                        <span class="top__text">Product</span>
+                                        <span class="top__text__right">Total</span>
+                                    </li>
+                                    {{#each cartData}}
+                                    <li> {{this.product_id.name}} * {{this.quantity}} <span>Rs
+                                            {{this.product_id.price}}</span></li>
+                                    {{/each}}
+                                </ul>
+                            </div>
+
+
+                            {{!-- COUPON APPLY --}}
+                            <input type="text" style="height: 30px;border:1px solid rgb(224, 224, 224);    margin-left: 35px;margin-top: 15px"
+                                id="couponInput" class="rounded" placeholder="Enter Coupon" name="search">
+                            {{!-- <button type="button" id="couponButton" style="btn btn-warning">Apply</button> --}}
+                                   <button type="button" id="couponButton" class="btn btn-warning btn-sm"> Apply</button>
+
+                                {{!-- <div id="item_card"></div> --}}
+                                <div class="row">
+  <div class="col-md-3 offset-md-3">
+    <div id="item_card" class="text-danger text-left"></div>
+  </div>
+</div>
+
+
+
+
+                            <div class="checkout__order__total">
+                                <ul>
+                                    {{!-- <li>Subtotal <span>Rs {{subTotal}}</span></li> --}}
+                                    <li>Sub Total <span id="total">{{subTotal}}</span></li>
+                                    <li>Discount <span id="discount"></span></li>
+                                    <li>Total <span id="newtotal">{{subTotal}}</span></li>
+                                </ul>
+                            </div>
+                            
+                            {{!-- totalAfterDiscount --}}
+                            <input hidden class="totalAfterDiscount" type="text" name="totalAfterDiscount">
+
+                            <button type="submit" class="site-btn">Place Order</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+    <!-- Checkout Section End -->
+
+
+    <!-- Instagram Begin -->
+    <div class="instagram">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-2 col-md-4 col-sm-4 p-0">
+                    <div class="instagram__item set-bg" data-setbg="img/instagram/insta-1.jpg">
+                        <div class="instagram__text">
+                            <i class="fa fa-instagram"></i>
+                            <a href="#">@ ashion_shop</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-4 p-0">
+                    <div class="instagram__item set-bg" data-setbg="img/instagram/insta-2.jpg">
+                        <div class="instagram__text">
+                            <i class="fa fa-instagram"></i>
+                            <a href="#">@ ashion_shop</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-4 p-0">
+                    <div class="instagram__item set-bg" data-setbg="img/instagram/insta-3.jpg">
+                        <div class="instagram__text">
+                            <i class="fa fa-instagram"></i>
+                            <a href="#">@ ashion_shop</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-4 p-0">
+                    <div class="instagram__item set-bg" data-setbg="img/instagram/insta-4.jpg">
+                        <div class="instagram__text">
+                            <i class="fa fa-instagram"></i>
+                            <a href="#">@ ashion_shop</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-4 p-0">
+                    <div class="instagram__item set-bg" data-setbg="img/instagram/insta-5.jpg">
+                        <div class="instagram__text">
+                            <i class="fa fa-instagram"></i>
+                            <a href="#">@ ashion_shop</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-4 p-0">
+                    <div class="instagram__item set-bg" data-setbg="img/instagram/insta-6.jpg">
+                        <div class="instagram__text">
+                            <i class="fa fa-instagram"></i>
+                            <a href="#">@ ashion_shop</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Instagram End -->
+
+
+{{!-- COUPON APPLY FETCH --}}
+    <script>
+    const couponBtn = document.getElementById('couponButton')
+    const couponInput = document.getElementById('couponInput')
+    const totalInput = document.getElementById('total')
+    const totalAfterDiscount = document.querySelector('.totalAfterDiscount')
+
+
+ couponBtn.addEventListener('click', async () => {
+const couponValue = couponInput.value.trim()
+
+//const totalValue = totalInput.value.trim()
+const totalValue = totalInput.textContent.trim()
+
+
+if (couponValue !== '') {
+   const response = await fetch(`/coupon?couponval=${couponValue}&total=${totalValue}`, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            const data = await response.json()
+            if(data){
+                console.log(data, 'daaaaaaaataaaaaaaaaapppppppppp')
+                const cardItem = document.getElementById('item_card')
+                cardItem.innerHTML = ''
+                cardItem.innerHTML = `${data.message}`
+                console.log(data.message, 346)
+
+             if (data.success) {
+                totalAfterDiscount.value = data.discount
+                 const discount = document.getElementById('discount')
+              discount.innerHTML = data.discount
+
+                    const newtotal = document.getElementById('newtotal')
+                newtotal.innerHTML = data.newTotal
+
+             }
+            }
+}
+})
+</script>
+
+
+
+
+
+    {{!-- sweetalert --}}
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <script>
+
+        function showDeleteConfirmation(event) {
+            event.preventDefault();
+            const addressId = event.target.getAttribute("address-id");
+
+
+            //Promise API waits for the user to interact with the confirmation dialog, 
+            //and then uses the fetch API to send the delete/get request to the API.
+            return new Promise((resolve) => {
+                swal({
+                    title: "Are you sure?",
+                    text: "Once deleted, you will not be able to recover this addrress!",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                }) // returns a Promise
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            resolve(true);
+                        } else {
+                            resolve(false);
+                        }
+                    });
+            })
+
+
+                .then((confirmed) => {
+                    if (confirmed) {
+                        fetch(`/deleteaddress?id=${addressId}`, {
+                            method: "GET"
+                        })
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error(`Failed to delete address: ${response.status}`); //If the request fails, an error message is displayed.
+                                }
+                                location.reload();  //If the request is successful, the page is reloaded to reflect the changes.
+                            })
+                            .catch(error => {
+                                console.error(error);
+                                alert("Failed to delete category");
+                            });
+                    }
+                });
+        }
+
+    </script>
+
+
+
+
+
+
+    {{> footer}}

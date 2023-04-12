@@ -1,0 +1,17 @@
+const mongoose=require('mongoose')
+
+//schema of model
+const categorySchema=new mongoose.Schema({
+
+    name:{
+        type:String,
+        required:true
+    },
+    image:{
+        type:String,
+        required:true
+    }
+});
+
+module.exports=mongoose.model('Category',categorySchema) //can be used anywhere in the project 
+

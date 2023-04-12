@@ -1,0 +1,260 @@
+{{> header}}
+
+
+<!-- Breadcrumb Begin -->
+<div class="breadcrumb-option">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb__links">
+                    <a href="./index.html"><i class="fa fa-home"></i> Home</a>
+                    <span>Shopping cart</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+
+<!-- Shop Cart Section Begin -->
+<section class="shop-cart spad">
+    <div class="container">
+
+        <div class="row">
+
+            <div class="col-lg-12">
+                <div class="shop__cart__table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+
+                        <tbody>
+                            {{#each cartData}}
+                            <tr>
+                                <td class="cart__product__item">
+                                    <img src="/uploads/{{this.product_id.image.[0]}}" alt="{{this.product_id.image}}"
+                                        width="100px" height="100px">
+                                    <div class="cart__product__item__title">
+                                        <h6>{{this.product_id.name}}</h6>
+                                        <div class="rating">
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="cart__price">Rs {{this.product_id.price}}</td>
+
+
+                                <input type="hidden" name="productprice" value="{{this.product_id.price}}">
+                                <input type="hidden" name="productId" value="{{this.product_id._id}}">
+
+                                <td class="cart__quantity">
+                                    <div class="quantity d-flex">
+                                        {{!-- minus button --}}
+                                        <button class="minus-btn" onclick="totalprice('{{this.product_id._id}}','dec')"
+                                            type="button"><i class="fa fa-minus"></i></button>
+
+
+                                        {{!-- quantity --}}
+                                        <input type="number" id="{{this.product_id._id}}" class="qty-input"
+                                            style="width:50px;padding-left: 12px;" style="width: 30px;"
+                                            name="num-product" value="{{this.quantity}}" min="1"
+                                            max="{{this.product_id.quantity}}" readonly>
+
+
+                                        {{!-- plus button --}}
+                                        <button class="plus-btn"
+                                            onclick="totalprice('{{this.product_id._id}}','inc','{{this.product_id.quantity}}')"
+                                            type="button"><i class="fa fa-plus"></i></button>
+                                    </div>
+                                </td>
+
+
+                                {{!-- final price of each item --}}
+                                <td>
+                                    <span class="cart__total" name="productTotal">{{calcTotal this.quantity
+                                        this.product_id.price}}</span>
+                                </td>
+
+
+                                {{!-- delete product from cart --}}
+                                <td class="cart__close"
+                                    onclick="window.location.href='/deletecart?id={{this.product_id._id}}'"><span
+                                        class="icon_close"></span></td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+        </div>
+
+
+        <div class="row">
+
+            <div class="col-lg-4 offset-lg-6">
+                <div class="cart__total__procced">
+                    <h6>Cart total</h6>
+                    <ul>
+
+
+                        {{!-- final total down --}}
+                        <li>SubTotal<span id="subTotal" style="margin-right: 60px">Rs {{subTotal}}</span></li>
+
+                        {{!-- <li>Total<span>${{subTotal}}</span></li> --}}
+                    </ul>
+                    <a href="/checkout" class="primary-btn">Proceed to checkout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Shop Cart Section End -->
+
+<!-- Instagram Begin -->
+<div class="instagram">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-2 col-md-4 col-sm-4 p-0">
+                <div class="instagram__item set-bg" data-setbg="img/instagram/insta-1.jpg">
+                    <div class="instagram__text">
+                        <i class="fa fa-instagram"></i>
+                        <a href="#">@ ashion_shop</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-sm-4 p-0">
+                <div class="instagram__item set-bg" data-setbg="img/instagram/insta-2.jpg">
+                    <div class="instagram__text">
+                        <i class="fa fa-instagram"></i>
+                        <a href="#">@ ashion_shop</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-sm-4 p-0">
+                <div class="instagram__item set-bg" data-setbg="img/instagram/insta-3.jpg">
+                    <div class="instagram__text">
+                        <i class="fa fa-instagram"></i>
+                        <a href="#">@ ashion_shop</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-sm-4 p-0">
+                <div class="instagram__item set-bg" data-setbg="img/instagram/insta-4.jpg">
+                    <div class="instagram__text">
+                        <i class="fa fa-instagram"></i>
+                        <a href="#">@ ashion_shop</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-sm-4 p-0">
+                <div class="instagram__item set-bg" data-setbg="img/instagram/insta-5.jpg">
+                    <div class="instagram__text">
+                        <i class="fa fa-instagram"></i>
+                        <a href="#">@ ashion_shop</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-sm-4 p-0">
+                <div class="instagram__item set-bg" data-setbg="img/instagram/insta-6.jpg">
+                    <div class="instagram__text">
+                        <i class="fa fa-instagram"></i>
+                        <a href="#">@ ashion_shop</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Instagram End -->
+
+
+
+</html>
+
+{{> footer}}
+
+
+
+
+
+
+<script>
+
+    const totalprice = async (id, act, stock) => {
+        const elem = document.getElementById(id) //product_id 
+        console.log('elem')
+        console.log(elem)
+        console.log('elem value')
+        console.log(elem.value) //quantity 
+
+
+
+        if (act === 'inc') {
+            const stockValue = stock; //if increment, then 
+
+            elem.value = Number(elem.value) + 1;   //Number(elem.value) converts the value of elem to a number.
+            console.log('stock is')
+            console.log(stock)
+
+            console.log('elem.value now')
+            console.log(elem.value)
+
+        } else if (act === 'dec') {
+            elem.value > 1 ? elem.value = Number(elem.value) - 1 : ''  //if less than 1 elem.value remains unchanged and is set to an empty string (: '').
+
+        }
+
+        let subTotal = 0
+        let datas = []
+        let length = document.getElementsByName('productTotal').length
+        console.log('length productTotal')
+        console.log(length)
+
+
+        //for loop to find total price of each product
+
+        for (let i = 0; i < length; i++) {
+            //product price=quantity*price of one
+            document.getElementsByName('productTotal')[i].innerText = Number(document.getElementsByName('num-product')[i].value) * Number(document.getElementsByName('productprice')[i].value)
+            subTotal = subTotal + Number(document.getElementsByName('productTotal')[i].innerText)
+            //to find total sum, push each subTotal into datas array
+            datas.push({
+
+                id: document.getElementsByName('productId')[i].value,
+                quantity: Number(document.getElementsByName('num-product')[i].value)
+            })
+        }
+
+        document.getElementById('subTotal').innerText = "$ " + subTotal
+
+
+        //datas=[1,2,3,4]
+        //fetch
+        let data = await fetch('/cart-operation', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                datas
+            })
+        })
+        let Data = await data.json()
+    }
+
+
+</script>

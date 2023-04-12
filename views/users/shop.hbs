@@ -1,0 +1,503 @@
+{{> header}}
+
+
+
+
+<!-- PRODUCTS LISTING STARTS HERE -->
+<div class="cat d-flex align-items-center"
+    style="list-style: none;width:fit-content;margin-left: 10%;padding: 10px 0 10px;">
+    {{!-- CATEGORIES FETCH NAVBAR --}}
+    {{#each categories}}
+    <li class="mr-3">
+
+
+        <h5 style="cursor: pointer;font-weight: bold;font-weight: bold; color: #333; padding: 10px; text-transform:uppercase"
+            id='catBtn' onclick="interConnect('{{this._id}}')" data-category_name="{{this.name}}" class="myLink"
+            data-category="{{this._id}}">
+            {{this.name}}</h5>
+    </li>
+
+    {{/each}}
+
+    <div class="d-flex gap-3 allign-items-center ">
+
+
+        {{!-- SEARCH BAR --}}
+
+        <input type="text" style="height: 30px;border:1px solid rgb(224, 224, 224) " id="searchInput" class="rounded"
+            placeholder="Search products" name="search">
+        <button id="searchButton" style="height: 30px;border:1px solid rgb(224, 224, 224) "
+            class="rounded">Search</button>
+
+
+        {{!-- DROPDOWN MENU --}}
+
+        <label for="sort-select">Sort by:</label>
+        <select style="height: 30px;border:1px solid rgb(224, 224, 224) " id="sort-select">
+
+            <optgroup label="Price">
+                <option value="default" selected>Choose from below</option>
+                <option value="price-low-to-high">Price: Low to High</option>
+                <option value="price-high-to-low">Price: High to Low</option>
+            </optgroup>
+
+            <optgroup label="Alphabetical">
+                <option value="aToZ">Name: A to Z</option>
+                <option value="zToA">Name: Z to A</option>
+            </optgroup>
+        </select>
+
+    </div>
+</div>
+
+
+
+{{!-- PRODUCT LISTING STARTS HERE --}}
+<div class="col-lg-12 container mt-3">
+    <div class="row" id="item_card">
+        {{#each productData.docs}}
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="product__item">
+                <div class="product__item__pic set-bg" data-setbg="">
+                    <img src="/uploads/{{this.image.[0]}}" alt="{{this.image}}">
+                    <ul class="product__hover">
+                        <li><a href="" class="image-popup"><span class="arrow_expand"></span></a></li>
+                        <li><a href="#"><span class="icon_heart_alt"></span></a></li>
+                        <li><a href=""><span class="icon_bag_alt"></span></a></li>
+                    </ul>
+                </div>
+                <div class="product__item__text">
+                    {{!-- <h6><a href="/users/productdetails?id={{this._id }}">{{this.name}}</a></h6>
+                    --}}
+                    <h6><a href="/productdetails/?id={{this._id }}">{{this.name}}</a></h6>
+                    <div class="rating">
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                    </div>
+                    <div class="product__price">Rs {{this.price}}</div>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+
+
+    {{!-- PAGINATION --}}
+    <nav>
+        <ul class="pagination">
+            <li class="page-item">
+                <a class="page-link" href="?page={{productData.prevPage}}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">Previous</span>
+                </a>
+            </li>
+
+            {{#each productData.pages}}
+            <li class="page-item {{#if this.active}}active{{/if}}">
+                <a class="page-link" href="?page={{this.pageNumber}}">{{this.pageNumber}}</a>
+            </li>
+            {{/each}}
+
+            {{#if productData.hasNextPage}}
+            <li class="page-item">
+                <a class="page-link" href="?page={{productData.nextPage}}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </li>
+            {{else}}
+            <li class="page-item disabled">
+                <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </li>
+            {{/if}}
+        </ul>
+    </nav>
+</div>
+
+
+
+
+
+{{!-- PAGINATION DUMMY --}}
+{{!-- <div class="col-lg-12 text-center">
+    <div class="pagination__option">
+        <a href="#">1</a>
+        <a href="#">2</a>
+        <a href="#">3</a>
+        <a href="#"><i class="fa fa-angle-right"></i></a>
+    </div>
+</div> --}}
+
+
+
+
+</div>
+</div>
+</div>
+{{!-- </div>
+</section> --}}
+<!-- Shop Section End -->
+
+
+
+<!-- Instagram Begin -->
+{{!-- <div class="instagram">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-2 col-md-4 col-sm-4 p-0">
+                <div class="instagram__item set-bg" data-setbg="img/instagram/insta-1.jpg">
+                    <div class="instagram__text">
+                        <i class="fa fa-instagram"></i>
+                        <a href="#">@ ashion_shop</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-sm-4 p-0">
+                <div class="instagram__item set-bg" data-setbg="img/instagram/insta-2.jpg">
+                    <div class="instagram__text">
+                        <i class="fa fa-instagram"></i>
+                        <a href="#">@ ashion_shop</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-sm-4 p-0">
+                <div class="instagram__item set-bg" data-setbg="img/instagram/insta-3.jpg">
+                    <div class="instagram__text">
+                        <i class="fa fa-instagram"></i>
+                        <a href="#">@ ashion_shop</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-sm-4 p-0">
+                <div class="instagram__item set-bg" data-setbg="img/instagram/insta-4.jpg">
+                    <div class="instagram__text">
+                        <i class="fa fa-instagram"></i>
+                        <a href="#">@ ashion_shop</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-sm-4 p-0">
+                <div class="instagram__item set-bg" data-setbg="img/instagram/insta-5.jpg">
+                    <div class="instagram__text">
+                        <i class="fa fa-instagram"></i>
+                        <a href="#">@ ashion_shop</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-sm-4 p-0">
+                <div class="instagram__item set-bg" data-setbg="img/instagram/insta-6.jpg">
+                    <div class="instagram__text">
+                        <i class="fa fa-instagram"></i>
+                        <a href="#">@ ashion_shop</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> --}}
+<!-- Instagram End -->
+
+</html>
+
+
+
+
+{{!-- INTERCONNECT --}}
+<script>
+    const searchInput = document.getElementById('searchInput')
+    
+
+    const interConnect = async (catid) => {
+  try {
+    const searchValue = searchInput.value.trim()
+
+    let queryParams = `?`;
+
+    if (catid) {
+      queryParams += `catid=${catid}`;
+    }
+
+    if (searchValue) {
+      queryParams += `${catid ? '&' : ''}searchval=${searchValue}`;
+    }
+
+    const response = await fetch(`/interconnect${queryParams}`, {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+
+    const data = await response.json()
+    if (data) {
+      console.log('did is response frm apiii')
+      console.log(data)
+
+      const cardItem = document.getElementById("item_card")
+      cardItem.innerHTML = ''
+
+      data.shopData.forEach((element) => {
+        cardItem.innerHTML += ` <div class="product__item col-3">
+        <div class="product__item__pic set-bg" data-setbg="">
+          <img class="img-fluid" src="/uploads/${element.image[0]}" alt="${element.image}" >
+          <ul class="product__hover">
+            <li><a href="" class="image-popup"><span class="arrow_expand"></span></a></li>
+            <li><a href="#"><span class="icon_heart_alt"></span></a></li>
+            <li><a href="#"><span class="icon_bag_alt"></span></a></li>
+          </ul>
+        </div>
+        <div class="product__item__text">
+          <h6><a href="/productdetails/?id=${element._id}">${element.name}</a></h6>
+          <div class="rating">
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+          </div>
+          <div class="product__price"> Rs ${element.price}</div>
+        </div>
+
+      </div>`
+      })
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+</script>
+
+
+{{!-- <script>
+    const searchBtn = document.getElementById('searchButton')
+const searchInput = document.getElementById('searchInput')
+const catBtn = document.getElementById('catBtn')
+
+console.log('interconnect fetch hbssssssssssssssssssssssss')
+
+const interConnect = async (catid) => {
+
+    const searchValue = searchInput.value.trim()
+
+    const response = await fetch(`/interconnect?catid=${catid}&searchval=${searchValue}`, {
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+
+    const data = await response.json()
+    if (data) {
+        console.log('did is response frm apiii')
+        console.log(data)
+
+        const cardItem = document.getElementById("item_card")
+        cardItem.innerHTML = ''
+
+        data.shopData.forEach((element) => {
+            cardItem.innerHTML += ` <div class="product__item col-3">
+        <div class="product__item__pic set-bg" data-setbg="">
+          <img class="img-fluid" src="/uploads/${element.image[0]}" alt="${element.image}" >
+          <ul class="product__hover">
+            <li><a href="" class="image-popup"><span class="arrow_expand"></span></a></li>
+            <li><a href="#"><span class="icon_heart_alt"></span></a></li>
+            <li><a href="#"><span class="icon_bag_alt"></span></a></li>
+          </ul>
+        </div>
+        <div class="product__item__text">
+          <h6><a href="/productdetails/?id=${element._id}">${element.name}</a></h6>
+          <div class="rating">
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+          </div>
+          <div class="product__price"> Rs ${element.price}</div>
+        </div>
+
+  </div>`
+        })
+    }
+}
+
+
+</script>
+ --}}
+
+
+
+
+
+
+
+
+
+
+
+{{!-- 1 CAT FILTER --}}
+{{!--
+<script>
+    const catFilter = async (id) => { //pass arg inside async
+
+        const response = await fetch(`/cat_filter?catid=${id}`, {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+
+        const data = await response.json()
+        if (data) {
+            //console.log(data)
+            const cardItem = document.getElementById("item_card")
+            cardItem.innerHTML = ''
+
+            data.shopData.forEach((element) => {
+                cardItem.innerHTML += ` <div class="product__item col-3">
+            <div class="product__item__pic set-bg" data-setbg="">
+              <img class="img-fluid" src="/uploads/${element.image[0]}" alt="${element.image}" >
+              <ul class="product__hover">
+                <li><a href="" class="image-popup"><span class="arrow_expand"></span></a></li>
+                <li><a href="#"><span class="icon_heart_alt"></span></a></li>
+                <li><a href="#"><span class="icon_bag_alt"></span></a></li>
+              </ul>
+            </div>
+            <div class="product__item__text">
+              <h6><a href="/productdetails/?id=${element._id}">${element.name}</a></h6>
+              <div class="rating">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+              </div>
+              <div class="product__price"> Rs ${element.price}</div>
+            </div>
+
+      </div>`
+            })
+        }
+    }
+</script> --}}
+
+
+
+{{!-- 2 SORT --}}
+<script>
+    const sortSelect = document.querySelector('#sort-select')
+    sortSelect.addEventListener('change', () => {
+        const sortValue = sortSelect.value;
+        sortFunction(sortValue);
+    });
+
+    const sortFunction = async (id) => {
+        const dropdown = document.getElementById('sort-select')
+        const selectedOption = dropdown.selectedIndex
+        const selectedOptionValue = dropdown.options[selectedOption].value
+        console.log("Selected option value: " + selectedOptionValue);
+
+        const response = await fetch(`/sort?sortid=${id}`, {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+
+        const data = await response.json()
+        if (data) {
+            console.log(data)
+            const cardItem = document.getElementById("item_card")
+            cardItem.innerHTML = ''
+            data.productData.forEach((element) => {
+                cardItem.innerHTML += `<div class="product__item col-3">
+            <div class="product__item__pic set-bg" data-setbg="">
+              <img class="img-fluid" src="/uploads/${element.image[0]}" alt="${element.image}" >
+              <ul class="product__hover">
+                <li><a href="" class="image-popup"><span class="arrow_expand"></span></a></li>
+                <li><a href="#"><span class="icon_heart_alt"></span></a></li>
+                <li><a href="#"><span class="icon_bag_alt"></span></a></li>
+              </ul>
+            </div>
+            <div class="product__item__text">
+              <h6><a href="/productdetails/?id=${element._id}">${element.name}</a></h6>
+              <div class="rating">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+              </div>
+              <div class="product__price"> Rs ${element.price}</div>
+            </div>
+
+      </div>`
+            })
+        }
+    }
+</script>
+
+
+
+
+{{!-- 3 GLOBAL SEARCH FUNCTION FETCH --}}
+{{!--
+<script>
+
+    const searchBtn = document.getElementById('searchButton')
+    const searchInput = document.getElementById('searchInput')
+
+    searchBtn.addEventListener('click', async () => {
+
+        const searchValue = searchInput.value.trim()
+
+        if (searchValue !== '') {
+            const response = await fetch(`/search?searchval=${searchValue}`, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            const data = await response.json()
+
+
+            if (data) {
+                console.log(data, 'daaaaaaaataaaaaaaaaa')
+                const cardItem = document.getElementById('item_card')
+                cardItem.innerHTML = ''
+
+                data.productData.forEach((element) => {
+                    cardItem.innerHTML += `<div class="product__item col-3">
+            <div class="product__item__pic set-bg" data-setbg="">
+              <img class="img-fluid" src="/uploads/${element.image[0]}" alt="${element.image}" >
+              <ul class="product__hover">
+                <li><a href="" class="image-popup"><span class="arrow_expand"></span></a></li>
+                <li><a href="#"><span class="icon_heart_alt"></span></a></li>
+                <li><a href="#"><span class="icon_bag_alt"></span></a></li>
+              </ul>
+            </div>
+            <div class="product__item__text">
+              <h6><a href="/productdetails/?id=${element._id}">${element.name}</a></h6>
+              <div class="rating">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+              </div>
+              <div class="product__price"> Rs ${element.price}</div>
+            </div>
+      </div>`
+                })
+            }
+        }
+    })
+</script> --}}
+
+
+
+
+
+{{> footer}}

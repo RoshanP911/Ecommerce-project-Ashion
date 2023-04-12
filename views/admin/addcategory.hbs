@@ -1,0 +1,77 @@
+{{> adminheader}}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Add Category</title>
+<link rel="stylesheet" type="text/css"   href="/css/addcategory.css"> 
+
+
+</head>
+
+<body>
+  
+  <div class="form-container">
+    <h1>Add Category</h1>
+    <form action="" method="post" enctype="multipart/form-data">
+    
+      <div class="form-field">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name">
+      </div>
+
+      <div class="form-field">
+        <label for="image">Image:</label>
+        <input type="file" id="image" name="image" accept="image/*" onchange="previewImage(event)">
+        <div class="image-preview"></div>
+      </div>
+
+      <div>
+        <p style="color: green;">
+          {{message}}
+        </p>
+      </div>
+
+      <div>
+        <p style="color: rgb(202, 14, 14);">
+          {{message1}}
+        </p>
+      </div>
+
+      <button class="submit-button" type="submit">Submit</button>
+
+      <a href="/admin/category" class="btn btn-edit">Go Back</a> 
+       
+    </form>
+ 
+     
+  </div>
+
+
+
+
+
+
+
+
+  
+  <script>
+    function previewImage(event) {
+      const preview = document.querySelector('.image-preview');
+      preview.innerHTML = '';
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        const img = new Image();
+        img.src = event.target.result;
+        img.style.width = '100%';
+        img.style.height = '100%';
+        preview.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+    }
+  </script>
+</body>
+
+</html>

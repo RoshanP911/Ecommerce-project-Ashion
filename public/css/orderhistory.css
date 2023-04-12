@@ -1,0 +1,32 @@
+
+
+  .order-table {
+    margin-top: 50px;
+  }
+  .order-table th {
+    background-color: #f5f5f5;
+  }
+  .order-table td {
+    vertical-align: middle;
+  }
+  .order-table td.status {
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+  .order-table td.ordered {
+    color: green;
+  }
+
+  .order-table td.delivered {
+    color: green;
+  }
+  .order-table td.shipped {
+    color: orange;
+  }
+  .order-table td.cancelled {
+    color: red;
+  }
+
+  .order-table td.returned {
+    color: red;
+  }

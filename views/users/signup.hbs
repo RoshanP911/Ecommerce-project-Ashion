@@ -1,0 +1,117 @@
+{{> header}}
+
+
+{{!-- new signup --}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
+<title>Signup Form </title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> 
+<link rel='stylesheet' href='/css/usersignup.css' />
+
+
+
+
+
+</head>
+<body>
+<div class="signup-form" > 
+
+   {{!-- onclick="signupValidate()" --}}
+    <form id="form" action="/signup"  method="post">
+		<h2>Sign Up</h2>
+		<p>Please fill this form to create an account!</p>       
+
+                <div class="form-outline mb-4">
+                   <label for="name">Name</label>
+                  <input type="text" id="name" name="name" class="form-control form-control-lg border-dark"/>
+                   <div  style="color: red;" class="error"></div>
+                </div>
+
+
+                <!-- Mobile input -->
+                <div class="form-outline mb-4">
+                   <label for="mobile">Mobile</label>
+                  <input type="tel" id="mobile" name="mobile" class="form-control form-control-lg border-dark" maxlength="10" />
+                   <div style="color: red;" class="error"></div>
+                </div>
+
+                <!-- Email input -->
+                <div class="form-outline mb-4">
+                  <label for="email">Email address</label>
+                  <input type="email" id="email" name="email" class="form-control form-control-lg border-dark" /> 
+                  <div  style="color: red;" class="error"></div>
+                </div>
+
+
+                <!-- Password input -->
+                <div class="form-outline mb-4">
+                  <label for="Password">Password</label>
+                  <input type="password" id="password" name="password" class="form-control form-control-lg border-dark" /> 
+                    <div  style="color: red;" class="error"></div>
+                </div>
+
+                <!-- Confirm Password input -->
+                 <div class="form-outline mb-4">
+                  <label for="confirmPassword">Confirm Password</label>
+                  <input type="password" id="confirmPassword" name="confirmPassword" class="form-control form-control-lg border-dark"/> 
+                    <div style="color: red;" class="error" id="passErr"></div>
+                </div>
+
+                <div class="d-flex justify-content-around align-items-center mb-3">
+                  <h6>Already Have an account<a href="/login"> click here</a></h6>
+
+
+                </div>
+    <h5 class="text-danger text-center">{{message}}</h5>
+                <!-- Submit button -->
+                <button type="submit" class="btn btn-success btn-lg btn-block w-100 border-dark mb-4">Sign up</button>
+
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+	
+
+{{> footer}}
+
+ <script src="/validation.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

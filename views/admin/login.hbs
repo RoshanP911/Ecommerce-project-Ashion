@@ -1,0 +1,85 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.5.0/css/bootstrap.min.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" type="text/css" href="/css/adminlogin1.css">
+</head>
+
+<body>
+
+
+
+  <div class="container">
+    <div class="form-login">
+      <h1>Admin Login</h1>
+
+
+      <form action="" method="post">
+        <!-- Email input -->
+        <div class="form-outline mb-4">
+          <input type="email" id="form2Example1" class="form-control" placeholder="email" name="email" />
+          <label class="form-label" for="form2Example1"></label>
+        </div>
+
+        <!-- Password input -->
+        <div class="form-outline mb-4">
+          <input type="password" id="form2Example2" class="form-control" placeholder="password" name="password" />
+          <label class="form-label" for="form2Example2"></label>
+        </div>
+
+
+
+
+
+        <div id="red" style="color: red;">
+          <p style="color: rgb(213, 11, 11);">
+            {{message}}
+          </p>
+        </div>
+
+        <!-- Submit button -->
+        <button type="submit" class="btn btn-primary btn-block mb-4">Sign in</button>
+
+    </div>
+    </form>
+
+
+
+
+
+
+
+  </div>
+  </div>
+  <!-- Bootstrap JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.5.0/js/bootstrap.min.js"></script>
+</body>
+
+</html>
+
+
+
+<script>
+  const form = document.querySelector("form")
+  const email = document.querySelector("input[type=email]")
+  const password = document.querySelector("input[type=password]")
+  const msg = document.getElementById('red')
+
+  form.addEventListener("submit", onsubmitFunction);
+  function onsubmitFunction(event) {
+    if (email.value === "" || password.value === "") {
+      event.preventDefault();
+    
+      msg.innerHTML="Please fill the form"
+      return false;
+    }
+  }
+</script>

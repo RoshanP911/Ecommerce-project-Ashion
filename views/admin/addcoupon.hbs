@@ -1,0 +1,46 @@
+{{> adminheader}}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+           <link rel="stylesheet" type="text/css"   href="/css/addcoupon.css"> 
+
+    <title>Add Coupon</title>
+</head>
+<body>
+ <h3 style="margin-left: 600px;">Add Coupon</h3>
+
+   <form action="" method="post" role="form">
+ 
+  <label for="coupon-code">Coupon Code:</label>
+  <input type="text" id="couponcode" name="code" required>
+  
+  <label for="expiry-date">Expiry Date:</label>
+  <input type="date" id="expiry-date" name="expiryDate" required>
+  
+  <label for="coupon-discount">Discount:</label>
+  <input type="text" id="discount" name="discount" required>
+
+  <label for="minBill">Minimum Bill:</label>
+  <input type="text" id="minBill" name="minBill" required>
+  
+  <label for="coupon-status">Coupon Status:</label>
+  <select id="coupon-status" name="status" required>
+    <option value="active">Active</option>
+    {{!-- <option value="expired">Expired</option> --}}
+    <option value="inactive">Inactive</option>
+  </select>
+   <p style="color: rgb(128, 0, 0);">
+          {{message}}
+        </p>
+  <input type="submit" value="Add Coupon">
+</form>
+
+
+
+    
+</body>
+</html>

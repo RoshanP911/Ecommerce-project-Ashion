@@ -1,0 +1,189 @@
+{{> adminheader}}
+
+
+<!DOCTYPE html>
+<html>
+<link rel="stylesheet" type="text/css" href="/css/editproduct.css">
+
+<body>
+  <div class="form-container">
+    <h1>Edit Product</h1>
+    <form action="" method="post" enctype="multipart/form-data">
+      {{!-- <form action="/admin/editproduct/{{product._id}}" method="post" enctype="multipart/form-data"> --}}
+
+
+        <div class="form-field">
+          <label for="name">Name:</label>
+          <input id="name" maxlength="40" class="form-control" value="{{product.name}}" name="name">
+        </div>
+
+        <div class="form-field">
+          <label for="name">Description:</label>
+          <input id="name" maxlength="120" class="form-control" value="{{product.description}}" name="description">
+        </div>
+
+
+
+
+
+        {{!-- new --}}
+        <div class="form-group">
+          <label for="productImage">Product Image:</label>
+          <div class="d-flex border p-10 m-tb-10">
+            <input name="product_id" type="hidden" value="{{product._id}}">
+            {{#each product.image}}
+            <div class="image-container">
+              {{!-- delete btn --}}
+              <p onclick="deleteProImg()" class="close-button" style="cursor: pointer;height:1px" data-image-index="{{@index}}"
+                style="text-decoration: none;">×</p>
+
+              <img src="/uploads/{{this}}" alt="images" style="width: 100px; height: auto;" class="m-2 pro-image"
+                data-image-index="{{@index}}">
+            </div>
+            {{/each}}
+          </div>
+          <input type="file" class="form-control-file" id="productImage" multiple name="image">
+        </div>
+
+
+
+        {{!-- category dropdown --}}
+        <div class="form-field">
+          <label for="name">Category:</label>
+          <select id="name" required name="category" input type="text">
+
+            {{#each categoryData}}
+            <option value={{this._id}}>{{this.name}}</option>
+            {{/each}}
+
+
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label for="name">Price:</label>
+          <input type="number" id="name" value="{{product.price}}" required name="price">
+        </div>
+
+
+        <div class="form-field">
+          <label for="name">Brand:</label>
+          <input type="text" id="name" value="{{product.brand}}" required name="brand">
+        </div>
+
+
+
+        <div class="form-field">
+          <label for="name">Quantity:</label>
+          <input type="number" id="name" value="{{product.quantity}}" name="quantity">
+        </div>
+
+
+        <div>
+          <p style="color: green;">
+            {{message}}
+          </p>
+        </div>
+
+
+        <button class="submit-button" type="submit">Submit</button>
+        <br>
+        <br>
+        <a href="/admin/product" class="btn btn-success">Go Back</a>
+
+
+
+        <input type="hidden" name="id" value={{product._id }}>
+
+
+      </form>
+  </div>
+
+
+
+</body>
+
+</html>
+
+
+
+{{!-- working code for single photo --}}
+
+
+{{!-- <script>
+  function previewImage(event) {
+    const preview = document.querySelector('.image-preview');
+    preview.innerHTML = '';
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = function (event) {
+      const img = new Image();
+      img.src = event.target.result;
+      img.style.width = '100%';
+      img.style.height = '100%';
+      preview.appendChild(img);
+    };
+    reader.readAsDataURL(file);
+  }
+</script> --}}
+
+
+
+<script>
+
+
+
+  //   async function deleteImage(productId,imageIndex){
+  const deleteImage = async (productId, imageIndex) => {
+
+    console.log('delete mmmmmmmmeeeeeee')
+    try {
+      const response = await fetch(`/admin/proimgdelete?id=${productId}&image=${imageIndex}`, {
+        method: 'DELETE'
+      })
+      const data = await response.json()
+
+      if (data) {
+        const imageElt = document.querySelector(`.pro-image[ data-image-index="${imageIndex}"]`)
+        const closeBtn= document.querySelector(`.close-button[data-image-index="${imageIndex}"]`)
+        if (imageElt) {
+          console.log(imageElt, 'httttttttttttttttttttttoooooo')
+          imageElt.remove() // remove the image element completely
+          closeBtn.remove()
+        }
+      }
+    }
+    catch (error) {
+      console.error(error);
+    }
+  }
+
+
+
+
+  const deleteProImg = () => {
+    const deletebutton = document.querySelectorAll('.close-button')
+    const productId = document.getElementsByName('product_id')[0].value
+    console.log('delete prrooaaaaaaa')
+
+    deletebutton.forEach(button => {
+      button.addEventListener('click', async (event) => { //taking index num from button 
+        const imageIndex = event.target.dataset.imageIndex;
+        console.log(productId, 'kkkkkkkkkkoooooookkkkkkkkkk')
+        console.log(imageIndex, 'mmmmaaaaaaaaannnnnn') //0,1,2..
+        deleteImage(productId, imageIndex)
+        //onclick="deleteImage('{{productId}}', '{{imageIndex}}')"
+
+      })
+    })
+  }
+
+
+</script>
+
+
+
+
+
+
+

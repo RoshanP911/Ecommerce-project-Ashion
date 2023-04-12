@@ -1,0 +1,55 @@
+{{> adminheader}}
+<!DOCTYPE html>
+
+<link rel="stylesheet" type="text/css" href="/css/orderdetails.css">
+
+<body>
+
+  <h3 style="text-align: center;margin-top:10px">Order Details</h3>
+
+
+
+  <table>
+    <tr>
+      <th>Image</th>
+      <th>Product Name</th>
+      <th>Brand</th>
+      <th>Price</th>
+      <th>Quantity</th>
+      <th>Status</th>
+    </tr>
+    {{#each orderDetail}}
+    {{#each this.items}}
+    <tr>
+      <td class="product-image"><img src="/uploads/{{this.product_id.image.[0]}}" alt="{{this.image}}"></td>
+      <td>{{product_id.name}}</td>
+      <td>{{product_id.brand}}</td>
+      <td>Rs {{product_id.price}}</td>
+      <td>{{./quantity}}</td>
+      <td>{{../status}}</td>
+
+
+    </tr>
+    {{/each}}
+    {{/each}}
+  </table>
+
+  <form style="margin-left:120px" action="" method="post">
+    <label for="status_change">Update Order Status:</label>
+    <select id="status_change" name="status_change" required>
+      <option value="">Select an option</option>
+      <option value="ordered">Ordered</option>
+      <option value="shipped">Shipped</option>
+      <option value="cancelled">Cancelled</option>
+      <option value="delivered">Delivered</option>
+    </select>
+
+    <button class="btn-primary" type="submit">Submit</button>
+    <input type="hidden" name="id" value="{{orderDetail._id }}">
+  </form>
+
+
+
+</body>
+
+</html>
