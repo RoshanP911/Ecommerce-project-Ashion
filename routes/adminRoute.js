@@ -20,6 +20,7 @@ adminRoute.get('/users', adminLoggedIn,adminController.loadUsers)
 adminRoute.get('/dashboard', adminLoggedIn,dashboardController.homeload)
 adminRoute.get('/salesreport', adminLoggedIn,dashboardController.reports)
 adminRoute.post('/getOrders', adminLoggedIn,dashboardController.getorders)
+adminRoute.get('/excelDownload', adminLoggedIn,dashboardController.excelDownload)
 
 
 //adminRoute.get('/salesreport', adminLoggedIn,dashboardController.salesreport)
