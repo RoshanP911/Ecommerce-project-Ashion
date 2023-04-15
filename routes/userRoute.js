@@ -23,9 +23,12 @@ userRoute.get("/shop", userController.loadShop);
 userRoute.get("/productdetails", userController.loadDetails);
 userRoute.post("/productdetails", cartController.addToCart);
 //userRoute.get('/cat_filter', userController.categoryFilter)
-userRoute.get('/search',userController.search)
-userRoute.get('/sort',userController.sort)
-userRoute.get('/interconnect',userController.interConnect)
+userRoute.post('/searchproduct',userController.search)
+userRoute.post('/sort',userController.sort)
+//userRoute.post('/searchproduct',userController.sort)
+
+
+userRoute.post('/interconnect',userController.interConnect)
 
 
 //USER

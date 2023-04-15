@@ -118,42 +118,8 @@
   </div>
 
 
-{{!-- 
-  <div class="raw">
-    <div class="col-10 my-3 offset-2">
-      <div class="card">
-        <div class="card-body">
-          <h5 style="text-align: center;">Sales Report</h5>
-          <hr>
-          <div>
-            <form action="/admin/daily-report" method="post">
-              <label for="daily">Daily sales</label>
-              <input class="ml-5 mt-2" type="date" name="daily" id="daily">
-              <button class="btn btn-primary ml-auto" type="submit" style="margin-left: 10px;">View</button>
-            </form>
-          </div>
-          <div>
 
-
-            <form action="/admin/monthly-report" method="post">
-              <label for="monthly">Monthly sales</label>
-              <input class="ml-4 mt-2" type="month" name="month" id="month">
-              <button class="btn btn-primary ml-auto " type="submit" style="margin-left: 10px;">View</button>
-            </form>
-          </div>
-          <div>
-            <form action="/admin/yearly-report" method="post">
-              <label for="yearly">Yearly sales</label>
-              <input class="ml-5 mt-2" type="number" name="yearly" id="yearly" min="2010" max="2023" value="2023">
-              <button  class="btn btn-primary ml-auto" type="submit">View</button>
-            </form>
-
-          </div>
-
-        </div>
-      </div>
-    </div>
-  </div> --}}
+<a href="/admin/salesreport" class="btn btn-success">Sales Report</a>
 
 </div>
 
@@ -166,8 +132,6 @@
 
 <script>
   const orderCounts = {{{ json orderCounts }}};
-
-  console.log(orderCounts);
 
 
   const dates = orderCounts.map(order => order.month); //march,april ....
@@ -208,10 +172,6 @@
   const ctx4 = document.getElementById("myChart2");
   const cashOnDeliveryCount = document.getElementById("cashondelivery");
   const razorPayCount = document.getElementById("razorpay");
-//console.log(cashOnDeliveryCount.value,'cashOnDeliveryCount')
-//console.log(razorPayCount.value,'razorPayCount')
-console.log(cashOnDeliveryCount,'cashOnDeliveryCount')
-console.log(razorPayCount,'razorPayCount')
 
   new Chart(ctx4, {
     type: "pie",
@@ -242,15 +202,9 @@ console.log(razorPayCount,'razorPayCount')
 {{!-- categorysale --}}
 <script>
   const catOrderCounts = {{{ json categorysale}}};  //json object 
-//console.log('catOrderCountsssssssssssssss');
- // console.log(catOrderCounts);
   const catNames = catOrderCounts.map(order => order.category); //to get as array
   const catcounts = catOrderCounts.map(order => order.count);
   const ctx3 = document.getElementById("myChart3");
-//console.log('catcounts')
- //console.log(catcounts) 
- //console.log('catNames')
- //console.log(catNames)
 
   new Chart(ctx3, {
     type: "pie",

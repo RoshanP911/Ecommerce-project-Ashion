@@ -387,49 +387,152 @@ module.exports = {
 
 
 
+const reports = async (req, res) => {
+  try {
+    const ordersdata = await orders.find().populate('items.product').sort({ orderdate: -1 })
+    res.render('report', { orders: ordersdata })
 
-// create an HTML canvas element
-const canvas = document.createElement('canvas');
-canvas.id = 'myChart';
-document.body.appendChild(canvas);
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+let monthlyorderdata
+const getorders = async (req, res) => {
+  try {
+    const fromdate = req.body.fromDate
+    const toDate = req.body.toDate
+    monthlyorderdata = await orders.find({ orderdate: { $gte: fromdate, $lte: toDate } }).populate('items.product').sort({ orderdate: -1 })
+    res.json({ orderdata: monthlyorderdata })
+  } catch (error) {
+    console.log(error.message);
+  }
+}
 
-// get the chart context from the canvas element
-const ctx = canvas.getContext('2d');
+const excelDownload = async (req, res) => {
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet("Sales Data");
 
-// create the chart data
-const data = {
-  labels: ['Cash on Delivery', 'RazorPay'],
-  datasets: [{
-    data: [cashOnDeliveryCount, razorPayCount],
-    backgroundColor: [
-      'rgba(255, 99, 132, 0.5)',
-      'rgba(54, 162, 235, 0.5)'
-    ]
-  }]
+  // Add headers to the worksheet
+  worksheet.columns = [
+    { header: "Order ID", key: "_id", width: 10 },
+    { header: "Order Date", key: "orderdate", width: 15 },
+    { header: "Total Bill", key: "totalBill", width: 10 },
+    { header: "totalOrders", key: "totalOrders", width: 10 },
+    { header: "totalRevenue", key: "totalRevenue", width: 20 },
+  ];
+
+  let sum = 0
+  monthlyorderdata.forEach(element => {
+    sum += Number(element.totalbill)
+  });
+
+  monthlyorderdata.forEach((order) => {
+    worksheet.addRow({
+      OrderId: order._id,
+      OrderDate: order.orderdate,
+      totalBill: order.totalbill,
+    });
+
+  });
+  worksheet.addRow({
+    totalOrders: monthlyorderdata.length,
+    totalRevenue: sum,
+  });
+  res.setHeader(
+    "Content-Type",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  );
+  res.setHeader(
+    "Content-Disposition",
+    "attachment; filename=" + "SalesData.xlsx"
+  );
+
+  workbook.xlsx
+    .write(res)
+    .then(() => {
+      res.end();
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).send("An error occurred while generating the Excel file");
+    });
 };
 
-// create the chart options
-const options = {
-  responsive: true,
-  maintainAspectRatio: false
+
+
+
+
+
+const reports = async (req, res) => {
+  try {
+    const ordersdata = await orders.find().populate('items.product').sort({ orderdate: -1 })
+    res.render('report', { orders: ordersdata })
+
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+let monthlyorderdata
+const getorders = async (req, res) => {
+  try {
+    const fromdate = req.body.fromDate
+    const toDate = req.body.toDate
+    monthlyorderdata = await orders.find({ orderdate: { $gte: fromdate, $lte: toDate } }).populate('items.product').sort({ orderdate: -1 })
+    res.json({ orderdata: monthlyorderdata })
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+const excelDownload = async (req, res) => {
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet("Sales Data");
+
+  // Add headers to the worksheet
+  worksheet.columns = [
+    { header: "Order ID", key: "_id", width: 10 },
+    { header: "Order Date", key: "orderdate", width: 15 },
+    { header: "Total Bill", key: "totalBill", width: 10 },
+    { header: "totalOrders", key: "totalOrders", width: 10 },
+    { header: "totalRevenue", key: "totalRevenue", width: 20 },
+  ];
+
+  let sum = 0
+  monthlyorderdata.forEach(element => {
+    sum += Number(element.totalbill)
+  });
+
+  monthlyorderdata.forEach((order) => {
+    worksheet.addRow({
+      OrderId: order._id,
+      OrderDate: order.orderdate,
+      totalBill: order.totalbill,
+    });
+
+  });
+  worksheet.addRow({
+    totalOrders: monthlyorderdata.length,
+    totalRevenue: sum,
+  });
+  res.setHeader(
+    "Content-Type",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  );
+  res.setHeader(
+    "Content-Disposition",
+    "attachment; filename=" + "SalesData.xlsx"
+  );
+
+  workbook.xlsx
+    .write(res)
+    .then(() => {
+      res.end();
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).send("An error occurred while generating the Excel file");
+    });
 };
 
-// create the chart instance
-const myPieChart = new Chart(ctx, {
-  type: 'pie',
-  data: data,
-  options: options
-});
 
 
-
-
-imp
-{{!-- totalAfterDiscount --}}
-<input hidden class="totalAfterDiscount" type="text" name="totalAfterDiscount">
-const totalInput = document.getElementById('total')
-    const totalAfterDiscount = document.querySelector('.totalAfterDiscount')
-
-    if (couponValue !== '') {
-   const response = await fetch(`/coupon?couponval=${couponValue}&total=${totalValue}`, {
-                headers: {

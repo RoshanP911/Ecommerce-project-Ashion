@@ -9,17 +9,6 @@ const dotenv = require("dotenv");
 const { findByIdAndUpdate } = require("../models/userModel");
 require("dotenv").config();
 const PDFDocument = require("pdfkit");
-//const { default: items } = require("razorpay/dist/types/items");
-
-// hbs.registerHelper("eq", function (a, b) {
-//   return a === b;
-// });
-
-
-// hbs.registerHelper("or", function (x,y) {
-//   return x || y;
-// })
-
 
 
 // let otp
@@ -242,12 +231,6 @@ const loadShop = async (req, res) => {
     const result = await Product.paginate({}, options);
 
 
-    // res.render("users/shop", {
-    //   productData: productData,
-    //   userData1,
-    //   categories,
-    // });
-
     res.render("users/shop", {
       productData: result,
       userData1,
@@ -263,25 +246,16 @@ const loadShop = async (req, res) => {
 //INTERCONNECTING CATEGORY, SEARCH, SORT first linking cat filter and search
 const interConnect = async(req, res) => {
   try {
-    const catId =  req.query.catid
-    const searchVal= req.query.searchval.trim()
+        
+    console.log(req.body,'req.bodyyyyyyyyyyyyyyyyyyyyy');
+    const catId =  req.body.categoryId
 
-    let shopData = [];
+        const shopData = await Product.find({category: catId, is_blocked: false});
+         console.log(shopData,'shopDataaaaaaaaaaaaaaaaaaa');
 
-    if (catId) {
-      // Fetch products based on category filter
-      shopData = await Product.find({category: catId, is_blocked: false});
-    } else {
-      // Fetch all products if no category filter is present
-      shopData = await Product.find({is_blocked: false});
-    }
+     res.json({shopData}) 
 
-    if (searchVal) {
-      // Filter products based on search query
-      shopData = shopData.filter((product) => product.name.toLowerCase().includes(searchVal.toLowerCase()));
-    }
 
-    res.json({shopData}) 
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ error: 'Server error' });
@@ -297,129 +271,32 @@ const interConnect = async(req, res) => {
 
 
 
-// const interConnect = async(req, res) => {
-//   try {
-// console.log('req.queryyyyyyyyyyyyyyyyyyyyyyyy');
-// console.log(req.query)
-
-    
-// const catId =  req.query.catid
-// const searchVal= req.query.searchval.trim()
-// let shopData
-
-
-// if(catId){
-//   shopData = await Product.find({category: catId, is_blocked: false});
-// }else if(searchVal){
-//   shopData=await Product.find({is_blocked: false, $or:[{name:{$regex:'.*'+ search +'.*',$options:'i'}}] })
-
-// }
-
-// // console.log('shopdata aftr catid')
-// // console.log(shopData);
-
-
-
-// // console.log('finallll rreesssulltttttttt');
-// // console.log(shopData);
-
-// res.json({shopData}) 
-// console.log('enddddddddd');
-
-
-
-
-//   } catch (error) {
-//     console.log(error.message);
-//     res.status(500).json({ error: 'Server error' });
-//   }
-// }
-
-
-
-
-
-
-
-
-
-
-
-// const interConnect = async(req, res) => {
-//   try {
-// console.log('req.queryyyyyyyyyyyyyyyyyyyyyyyy');
-// console.log(req.query)
-
-    
-// const catId =  req.query.catid
-// const searchVal= req.query.searchval.trim()
-
-// // const sortId = req.query.sortid;
-
-// if(catId){
-//   let shopData = await Product.find({category: catId, is_blocked: false});
-
-
-// console.log('shopdata aftr catid')
-// console.log(shopData);
-
-
-// if(searchVal){
-
-
-// if(shopData){
-//   shopData = shopData.filter((product) =>product.name.toLowerCase().includes(searchVal.toLowerCase()));
-// }
-// else{
-//   shopData=await Product.find({is_blocked: false, $or:[{name:{$regex:'.*'+ search +'.*',$options:'i'}}] })
-// }
-// }
-
-// // console.log('finallll rreesssulltttttttt');
-// // console.log(shopData);
-
-// res.json({shopData}) 
-// }
-
-// console.log('enddddddddd');
-
-//   } catch (error) {
-//     console.log(error.message);
-//     res.status(500).json({ error: 'Server error' });
-//   }
-// };
-
-
-//FETCH CATEGORY
-// const categoryFilter = async(req, res) => {
-//  try {
-//   console.log('am from cat filterrrrr  ')
-//   const catId =  req.query.catid
-//   const shopData = await Product.find({
-//     category: catId,
-//     is_blocked: false,
-//   });
-  
-//   res.json({shopData})  //response from api to fetch in json format
-
-// } catch (error) {
-//   console.log(error.message);
-// }
-
-// }
-
 
 //SEARCH 
 const search=async(req,res)=>{
   try {
     let search=''
-      console.log(req.query.searchval);
-      search= req.query.searchval.trim()
-    const productData=await Product.find({is_blocked: false, $or:[{name:{$regex:'.*'+ search +'.*',$options:'i'}}]
-  })
+  
 
-    console.log(productData,'llllllllllllllllloooooooool');
-    res.json({productData})
+    console.log('bodytytytyyyyyyyyyyyyyyyyy');
+    console.log(req.body);
+
+      console.log(req.body.searchval);
+      search= req.body.searchval.trim()
+
+      const catId=req.body.categoryId
+      if(catId){
+ const shopData=await Product.find({is_blocked: false, $or:[{category:catId , name:{$regex:'.*'+ search +'.*',$options:'i'}}]})
+ res.json({shopData})      
+}else
+{
+  const shopData=await Product.find({is_blocked: false, $or:[{name:{$regex:'.*'+ search +'.*',$options:'i'}}]})
+  res.json({shopData}) 
+}
+   
+
+   
+   
 
   } catch (error) {
     console.log(error.message);
@@ -432,16 +309,39 @@ const search=async(req,res)=>{
 //SORT
 const sort = async (req, res) => {
   try {
-    const id = req.query.sortid;
+    const {id,categoryId} = req.body
+    console.log(req.body,'req.bodyyyyyyyyyyyyyyyyyyyyy');
     let productData;
     if (id === 'aToZ') {
-      productData = await Product.find({ is_blocked: false }).sort({ name: 1 });
+      if(categoryId){
+        productData = await Product.find({category:categoryId},{ is_blocked: false }).sort({ name: 1 });
+      }else{
+        productData = await Product.find({ is_blocked: false }).sort({ name: 1 });
+      }
+      
     } else if (id === 'zToA') {
-      productData = await Product.find({ is_blocked: false }).sort({ name: -1 });
+      if(categoryId){
+        productData = await Product.find({category:categoryId},{ is_blocked: false }).sort({ name: -1 });
+      }else{
+              productData = await Product.find({ is_blocked: false }).sort({ name: -1 });
+      }
+
     } else if (id==='price-low-to-high'){
-      productData = await Product.find({ is_blocked: false }).sort({ price: 1 });
+      if(categoryId){
+              productData = await Product.find({category:categoryId},{ is_blocked: false }).sort({ price: 1 });
+      }
+      else{
+        productData = await Product.find({ is_blocked: false }).sort({ price: 1 });
+      }
+
+
     } else if (id==='price-high-to-low'){
-      productData = await Product.find({ is_blocked: false }).sort({ price: -1 });
+      if(categoryId){
+        productData = await Product.find({category:categoryId},{ is_blocked: false }).sort({ price: -1 });
+      }else{
+         productData = await Product.find({ is_blocked: false }).sort({ price: -1 });
+      }
+     
     } else if (id==='default'){
       productData = await Product.find({ is_blocked: false })
     }
@@ -659,8 +559,8 @@ const orderHistory = async (req, res) => {
       .populate("items.product_id")
       .populate("shippingAddress")
       .sort({ dateOrdered: -1 });
-    console.log("this is oorderdata");
-    console.log(orderData);
+    // console.log("this is oorderdata");
+    // console.log(orderData);
 
     res.render("users/orderhistory", { userData1, orderData });
   } catch (error) {

@@ -17,15 +17,17 @@
 
  {{#each couponData}}
  <div class="coupon">
-   {{this.expiryDate}}
-		<h2>Get Rs{{this.discount}} off your purchase!</h2>
+
+		<h2>Get Rs {{this.discount}} off your purchase!</h2>
 		<p class="code">{{this.code}}</p>
-		<p class="expiry">Expires on {{this.expiryDate}}</p>
+		<p class="expiry">Expires on {{formatDate this.expiryDate "DD-MM-YYY HH:mm:ss"}}</p>
+        
 		<p class="details">Minimum bill: {{this.minBill}}</p>
 		<p class="status valid">Status: {{this.status}}</p>
         <br>
 
 	</div>
+    <br>
             {{/each}}
 
 

@@ -21,7 +21,6 @@ const verifyAdmin = async (req, res) => {
     password = req.body.password;
 
     const adminData = await Admin.findOne({ email: email });
-    console.log(adminData);
 
     if (adminData) {
       if (adminData.password == password) {
@@ -51,6 +50,14 @@ const loadDashboard = async (req, res) => {
   }
 };
 
+
+
+
+
+
+
+
+
 //USERS LIST
 const loadUsers = async (req, res) => {
   try {
@@ -65,10 +72,9 @@ const loadUsers = async (req, res) => {
 const blockUser = async (req, res) => {
   const blockid = req.params.id;
   const blockUserData = await User.findById(blockid);
-  // console.log(blockUserData);
+
   const block_status = blockUserData.is_blocked;
   try {
-    //  console.log(block_status);
 
     await User.findByIdAndUpdate(
       blockid,
@@ -99,9 +105,7 @@ const addCoupon = async (req, res) => {
     )) {
       res.render("admin/addcoupon", { message: "please fill the field" });
     } else {
-      //  format date
-    console.log('first hhhh');
-    console.log(req.body.expiryDate);
+  
 const inputDate = req.body.expiryDate; // assuming input is in yyyy-mm-dd hh:mm:ss format
 
     const coupon = new Coupon({
