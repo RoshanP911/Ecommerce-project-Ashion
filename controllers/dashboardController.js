@@ -1,21 +1,9 @@
 const User = require("../models/userModel"); //mongodb user model
 const Product = require("../models/productModel");
-// const Address = require("../models/addressModel");
-// const Category = require("../models/categoryModel");
 const Order = require("../models/orderModel");
  const moment = require("moment");
 const hbs = require("hbs");
 const ExcelJS = require('exceljs');
-
-
-
-let dailyorders;
-let totalOrderBill;
-let monthlyOrders;
-let totalMonthlyBill;
-let yearlyorders;
-let totalYearlyBill;
-
 
 
 //HELPER TO RETURN JSON OBJECT IN HBS
@@ -88,7 +76,7 @@ try {
           if (err) {
             console.log(err);
           } else {
-           // console.log(result);
+            console.log(result);
           }
         }
       )
@@ -157,10 +145,6 @@ res.render("admin/dashboard", {
   }
 
 
-
-// VYSHNAV's REPORT
-
-
   const reports = async (req, res) => {
     try {
       const ordersdata = await Order.find().populate('items.product_id').sort({ dateOrdered: -1 })
@@ -195,29 +179,26 @@ res.render("admin/dashboard", {
   
    // Add headers to the worksheet
     worksheet.columns = [
-      { header: "Order ID", key: "_id", width: 10 },
+      { header: "Order ID", key: "_id", width: 30 },
       { header: "Order Date", key: "orderdate", width: 15 },
       { header: "Total Bill", key: "totalBill", width: 10 },
       { header: "totalOrders", key: "totalOrders", width: 10 },
       { header: "totalRevenue", key: "totalRevenue", width: 20 },
     ];
-  // console.log('monthlyorderdataeeeeeeeeeeeeeeeeeeeeeeeeeeethiiiiiiiiiiiiiiii');
-  // console.log(monthlyorderdata);
+
     let sum = 0
     monthlyorderdata.forEach(element => {
-      sum += Number(element.totalbill)
+      sum += Number(element.totalBill)
     });
   
     monthlyorderdata.forEach((order) => {
-      console.log('orderadadadaddadadadadadaaddddddddddddddddddd')
-      console.log(order)
       worksheet.addRow({
         _id: order._id,
         orderdate: order.dateOrdered,
         totalBill: order.totalBill,
       });
     });
-    console.log('reacuhing herereeeeeeeeeeeeeee')
+
     worksheet.addRow({
       totalOrders: monthlyorderdata.length,
       totalRevenue: sum,

@@ -15,17 +15,10 @@ const store = require('../middlewares/multer');
 adminRoute.get('/',adminController.adminLogin)  //'admin/'
 adminRoute.post('/',adminController.verifyAdmin)
 adminRoute.get('/users', adminLoggedIn,adminController.loadUsers)
-// adminRoute.get('/dashboard', adminLoggedIn,adminController.loadDashboard)
-
 adminRoute.get('/dashboard', adminLoggedIn,dashboardController.homeload)
 adminRoute.get('/salesreport', adminLoggedIn,dashboardController.reports)
 adminRoute.post('/getOrders', adminLoggedIn,dashboardController.getorders)
 adminRoute.get('/excelDownload', adminLoggedIn,dashboardController.excelDownload)
-
-
-//adminRoute.get('/salesreport', adminLoggedIn,dashboardController.salesreport)
-
-
 
 adminRoute.get('/block/:id', adminLoggedIn,adminController.blockUser)
 adminRoute.get('/logout',  adminLoggedIn,adminController.adminlogout)
