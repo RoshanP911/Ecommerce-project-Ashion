@@ -1,8 +1,6 @@
 const express = require("express");
 const userRoute = express.Router();
 
-// const config = require("../config/config");
-
 const {userLoggedIn,userLoggedOut,blockCheck} =require("../middlewares/userAuth") 
 
 const userController = require("../controllers/userController");
@@ -22,12 +20,8 @@ userRoute.get("/home", userController.loadHome);
 userRoute.get("/shop", userController.loadShop);
 userRoute.get("/productdetails", userController.loadDetails);
 userRoute.post("/productdetails", cartController.addToCart);
-//userRoute.get('/cat_filter', userController.categoryFilter)
 userRoute.post('/searchproduct',userController.search)
 userRoute.post('/sort',userController.sort)
-//userRoute.post('/searchproduct',userController.sort)
-
-
 userRoute.post('/interconnect',userController.interConnect)
 
 
@@ -62,14 +56,4 @@ userRoute.post('/create/orderId', userLoggedIn,blockCheck, cartController.orderP
 userRoute.post('/api/payment/verify', userLoggedIn,blockCheck, cartController.paymentverify)
 
 userRoute.get("/logout", userLoggedIn, userController.userlogout);
-
-
-
-
-
-//userRoute.get("/test", userController.test);   //FOR ZOOM
-//userRoute.get("/test1", userController.test1);   //FOR fetCh
-// userRoute.get('error',userController.loadError)
-
-
 module.exports = userRoute;

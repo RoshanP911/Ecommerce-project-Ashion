@@ -1,8 +1,6 @@
 const express = require('express');
 const adminRoute = express.Router();
 
-
-// const auth=require('../middlewares/adminAuth') //
 const {adminLoggedIn}=require('../middlewares/adminAuth')
 
 const adminController=require('../controllers/adminController')
@@ -12,13 +10,14 @@ const dashboardController=require('../controllers/dashboardController');
 
 const store = require('../middlewares/multer');
 
-adminRoute.get('/',adminController.adminLogin)  //'admin/'
+adminRoute.get('/',adminController.adminLogin)  
 adminRoute.post('/',adminController.verifyAdmin)
 adminRoute.get('/users', adminLoggedIn,adminController.loadUsers)
 adminRoute.get('/dashboard', adminLoggedIn,dashboardController.homeload)
 adminRoute.get('/salesreport', adminLoggedIn,dashboardController.reports)
 adminRoute.post('/getOrders', adminLoggedIn,dashboardController.getorders)
 adminRoute.get('/excelDownload', adminLoggedIn,dashboardController.excelDownload)
+adminRoute.get('/downloadinvoicee', adminLoggedIn, adminController.invoiceeDownload);
 
 adminRoute.get('/block/:id', adminLoggedIn,adminController.blockUser)
 adminRoute.get('/logout',  adminLoggedIn,adminController.adminlogout)

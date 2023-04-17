@@ -199,7 +199,7 @@ let catId=false
 const interConnect = async (categoryId) => {
 
 catId = categoryId
-console.log(catId,'ppppppppppppppppppppppppppppppppppppppppppppppp')
+
 
 
     const response = await fetch(`/interconnect`, {
@@ -261,8 +261,6 @@ const searchProduct=async()=>{
 
 const searchInput = document.getElementById('searchInput')
     const searchValue = searchInput.value.trim()
-
-    console.log(catId, 'CATIDDD')
     
 
     
@@ -275,9 +273,6 @@ const searchInput = document.getElementById('searchInput')
 
     const data = await response.json()
     if (data) {
-
-        console.log('response frm apiii')
-        console.log(data)
 
         const cardItem = document.getElementById("item_card")
         cardItem.innerHTML = ''

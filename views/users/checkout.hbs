@@ -225,7 +225,6 @@
  couponBtn.addEventListener('click', async () => {
 const couponValue = couponInput.value.trim()
 
-//const totalValue = totalInput.value.trim()
 const totalValue = totalInput.textContent.trim()
 
 
@@ -237,7 +236,7 @@ if (couponValue !== '') {
             })
             const data = await response.json()
             if(data){
-                console.log(data, 'daaaaaaaataaaaaaaaaapppppppppp')
+                
                 const cardItem = document.getElementById('item_card')
                 cardItem.innerHTML = ''
                 cardItem.innerHTML = `${data.message}`
@@ -270,9 +269,6 @@ if (couponValue !== '') {
             event.preventDefault();
             const addressId = event.target.getAttribute("address-id");
 
-
-            //Promise API waits for the user to interact with the confirmation dialog, 
-            //and then uses the fetch API to send the delete/get request to the API.
             return new Promise((resolve) => {
                 swal({
                     title: "Are you sure?",

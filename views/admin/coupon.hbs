@@ -13,12 +13,13 @@
 <body>
  
 
-    <a href="http://127.0.0.1:3000/admin/addcoupon">Add Coupon</a>
-
+    
+<br>
  {{#each couponData}}
  <div class="coupon">
+ <div class="bg-white card addresses-item mb-4 shadow p-3  bg-white rounded">
 
-		<h2>Get Rs {{this.discount}} off your purchase!</h2>
+<h4>Get Rs {{this.discount}} off your purchase!</h4>
 		<p class="code">{{this.code}}</p>
 		<p class="expiry">Expires on {{formatDate this.expiryDate "DD-MM-YYY HH:mm:ss"}}</p>
         
@@ -26,11 +27,16 @@
 		<p class="status valid">Status: {{this.status}}</p>
         <br>
 
+ </div>
+		
+
 	</div>
     <br>
             {{/each}}
 
 
-    
+    <a href="http://127.0.0.1:3000/admin/addcoupon" class="btn btn-success" style="margin-left: 450px;">Add Coupon</a>
+ <br>
+ <br>
 </body>
 </html>

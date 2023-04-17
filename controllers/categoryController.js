@@ -42,8 +42,7 @@ const insertCategory = async (req, res) => {
       });
       const categoryy = await category.save();
 
-      console.log("new category details");
-      console.log(categoryy._id);
+   
 
       res.render("admin/addcategory", {
         message: "Category added successfully",
@@ -69,34 +68,7 @@ const loadEditCategory = async (req, res) => {
   }
 };
 
-//UPDATE CATEGORY
-// const updateCategory = async (req, res) => {
-//   try {
-//     const id = req.query.id;
-//      const categoryData = await Category.find();
-//     const name = req.body.name;
-//     const nameLo = name.toLowerCase();
 
-//     for(let i = 0; i < categoryData.length; i++){
-//       if(categoryData[i].name===nameLo){
-//         console.log(categoryData[i].name,'aaaaaaaaaaaaaaaaaaaaaaa');
-//         res.render("admin/editcategory", { message: "Category exists" });
-//       }
-//     else{
-//       await Category.findByIdAndUpdate(
-//         id,
-//         { name: name, image: req.file.filename },
-//         { new: true }
-//       );
-//       res.redirect("/admin/category");
-//     }
-//   }
-
-
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// };
 
 const updateCategory = async (req, res) => {
   try {
@@ -134,7 +106,6 @@ const updateCategory = async (req, res) => {
 const deleteCategory = async (req, res) => {
   try {
     const id = req.query.id;
-    console.log("this is id" + id);
     const category = await Category.findByIdAndDelete({ _id: id });
     res.redirect("/admin/category");
   } catch (error) {

@@ -103,7 +103,7 @@ const editProduct = async (req, res) => {
     const productData = await Product.findById({ _id: id });
     const oldPhotosArray=productData.image
 
-    console.log(oldPhotosArray,'oooooooollllllllllddddddddd');
+
     let newArray=[]
 
     //images from body 
@@ -116,7 +116,7 @@ const editProduct = async (req, res) => {
 
 //concatenating two arrays using spread operator
      newArray=[...oldPhotosArray,...images]
-     console.log(newArray,'meerrgggeddd');
+ 
 
     await Product.findByIdAndUpdate(
       { _id: id },
@@ -142,8 +142,7 @@ const editProduct = async (req, res) => {
 //new delete single image 
 const deleteProdImage=async(req,res)=>{
   try {
-    console.log(' delete imageeeeeeeeeeeee hereeeeeeeeeeeeee');
-    console.log(req.query,'fffunnnnnnnnnnnnnnnnnnnn');
+
     const {id, image}=req.query
     const productData=await Product.findById(id)
     productData.image.splice(image,1)

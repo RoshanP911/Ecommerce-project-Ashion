@@ -1,10 +1,11 @@
 {{> header}}
 
 {{!-- <link rel="stylesheet" type="text/css" href="/css/orderhistorydetails.css"> --}}
+
 <style>
  <style>
 <style>
-  /* Order Details Page */
+
   .order-details {
     display: flex;
     flex-direction: column;
@@ -56,19 +57,19 @@
   .brand,
   .price {
     margin: 0;
-    font-size: 16px;
+    font-size: 15px;
     color: #888;
   }
 
   .quantity label {
-    font-size: 16px;
+    font-size: 15px;
     margin-bottom: 5px;
   }
 
   input[type=number] {
     width: 50px;
     height: 30px;
-    font-size: 16px;
+    font-size: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
     padding: 0 10px;
@@ -77,20 +78,20 @@
   .shippingAddress {
     display: flex;
     align-items: center;
-    border: 1px solid #ddd;
-    padding: 20px;
-    margin-bottom: 20px;
+
+    padding: 5px;
+    margin-bottom: 5px;
   }
 
   .paymentmode {
     display: flex;
     align-items: center;
-    border: 1px solid #ddd;
-    padding: 20px;
-    margin-bottom: 20px;
+
+    padding: 5px;
+    margin-bottom: 5px;
   }
 
-  h5 {
+  h6 {
     margin: 0;
     margin-right: 10px;
   }
@@ -148,7 +149,6 @@
 </style>
 
 </style>
-
 <body>
   <br>
   <h3 style="margin-left: 50px;">Order Details</h3>
@@ -162,8 +162,9 @@
   {{#each this.items}}
 
 
+<div class="container" >
 
-  <div class="order-details">
+<div class="order-details ">
 
     <div class="product1">
       <div class="product-image">
@@ -171,13 +172,13 @@
       </div>
 
       <div class="product-info">
-        <h2 class="product-name">{{product_id.name}}</h2>
+        <h2 class="product-name" style="margin-right: 400px">{{product_id.name}}</h2>
         <p class="brand">{{product_id.brand}} </p>
         <p class="price">Rs {{product_id.price}} </p>
       </div>
 
 
-  <div class="quantity">
+  <div class="quantity" style="margin-right: 200px">
       <label for="quantity">Quantity: {{./quantity}} </label>
       {{!-- <input type="number" id="quantity" name="quantity" min="1" max="10" value="1"> --}}
     </div>
@@ -191,52 +192,95 @@
     <br>
   </div>
 
+
+</div>
+
+<br>
+
+  
+
   {{/each}}
   {{/each}}
 
 
   
+<div class="container" style="flex ">
+ <div class="container,flex;bg-white card addresses-item mb-4 shadow p-3  bg-white rounded">
+<div class="shippingAddress">
+    <h6>Shipping Address : </h6>&nbsp;
 
-  <div class="shippingAddress">
-    <h5>Shipping Address : </h5>&nbsp;
-    <td>
       {{orderDetail.shippingAddress.address1}}<br>
       &nbsp;{{orderDetail.shippingAddress.address2}},{{orderDetail.shippingAddress.city}},
       <br>{{orderDetail.shippingAddress.state}}
-    </td>
+  
   </div>
 
 
   <div class="paymentmode">
-    <td>
-      <h5>Payment Mode : </h5>&nbsp;
+ 
+      <h6>Payment Mode : </h6>&nbsp;
       {{orderDetail.paymentMode}}
-    </td>
+   
   </div>
 
   <div class="paymentmode">
-    <td>
-      <h5>Name : </h5>&nbsp;
+
+      <h6>Name : </h6>&nbsp;
       {{orderDetail.owner.name}}
-    </td>
+ 
   </div>
 
 
     <div class="paymentmode">
-    <td>
-      <h5>Date Ordered : </h5>&nbsp;
+
+      <h6>Date Ordered : </h6>&nbsp;
       {{formatDate orderDetail.dateOrdered "DD-MM-YYY HH:mm:ss"}}
-    </td>
+
+  </div>
+
+
+  
+    <div class="paymentmode">
+
+      {{#if (eq orderDetail.coupon "")}}
+       <h6>Coupon : </h6>&nbsp;
+       <h6>Not applied</h6> 
+      {{else}}
+    <h6>Coupon : </h6>&nbsp;
+      {{orderDetail.coupon}}
+          {{/if}}
+
+  </div>
+
+      <div class="paymentmode">
+
+
+      {{#if (eq orderDetail.discountAmt null)}}   
+      <h6>Discount Amount : </h6>&nbsp;
+      <h6>NA</h6>
+      {{else}}
+      <h6>Discount Amount : </h6>&nbsp;
+            {{orderDetail.discountAmt}}
+          {{/if}}
+
   </div>
 
    <div class="paymentmode">
-    <td>
-      <h5>Amount : </h5>&nbsp;
-      Rs {{orderDetail.totalBill}}
-    </td>
+
+      <h6>Amount : </h6>&nbsp;
+      ₹ {{orderDetail.totalBill}}
+
   </div>
 
+ </div>
 
+
+</div>
+
+</div>
+  
+
+<br>
 
   <div class="d-flex justify-content-center align-item-center gap-4">
     <div class="status d-flex align-items-center">

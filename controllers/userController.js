@@ -1,7 +1,7 @@
 const User = require("../models/userModel"); //mongodb user model
 const Product = require("../models/productModel");
 const Address = require("../models/addressModel");
-const Category = require("../models/categoryModel"); 
+const Category = require("../models/categoryModel");
 const Order = require("../models/orderModel");
 const argon2 = require("argon2");
 const nodemailer = require("nodemailer"); //email handler
@@ -10,13 +10,11 @@ const { findByIdAndUpdate } = require("../models/userModel");
 require("dotenv").config();
 const PDFDocument = require("pdfkit");
 
+const moment = require("moment");
 
-// let otp
 let userRegData;
-// let userData1
 
 const otp = `${Math.floor(1000 + Math.random() * 9000)}`;
-
 
 // GENERAL
 const general = async (req, res) => {
@@ -59,11 +57,10 @@ const createUser = async (req, res) => {
     userRegData = req.body;
 
     const existUser = await User.findOne({ email: email });
-    // console.log('hiii'+existUser)
+
     if (existUser == null) {
       await sendMail(name, email); //global variable
 
-      //  res.render('users/otp')
       res.redirect("/otp");
 
       console.log(name, email);
@@ -79,35 +76,41 @@ const createUser = async (req, res) => {
 };
 
 //USER LOGIN VERIFICATION
-  const verifyLogin = async (req, res) => {
+const verifyLogin = async (req, res) => {
   try {
     let email = req.body.email;
     let password = req.body.password;
 
     const userData = await User.findOne({ email: email });
 
- 
     const categories = await Category.find();
 
     if (userData) {
       var passwordMatch = await argon2.verify(userData.password, password);
 
-   
       if (passwordMatch) {
         const is_blocked = userData.is_blocked;
         if (!is_blocked) {
           req.session.userdata = userData;
-          
 
           res.redirect("/home"); //
         } else {
-          res.render("users/login", {categories, message: "Unauthorised access" });
+          res.render("users/login", {
+            categories,
+            message: "Unauthorised access",
+          });
         }
       } else {
-        res.render("users/login", {categories, message: "Password is incorrect" });
+        res.render("users/login", {
+          categories,
+          message: "Password is incorrect",
+        });
       }
     } else {
-      res.render("users/login", {categories, message: "Email or Password is incorrect" });
+      res.render("users/login", {
+        categories,
+        message: "Email or Password is incorrect",
+      });
     }
     // }
   } catch (error) {
@@ -162,7 +165,6 @@ const otpsubmit = async (req, res) => {
 
 //USER OTP VERIFICATION
 
-
 const sendMail = async (_id, email) => {
   try {
     const transporter = nodemailer.createTransport({
@@ -194,8 +196,7 @@ const sendMail = async (_id, email) => {
   }
 };
 
-
-//SHOP BY CATEGORY  
+//SHOP BY CATEGORY
 const shopByCategory = async (req, res) => {
   try {
     const userData1 = req.session.userdata;
@@ -206,156 +207,138 @@ const shopByCategory = async (req, res) => {
       is_blocked: false,
     });
 
-    res.json({shopData,categories,userData1})
-
+    res.json({ shopData, categories, userData1 });
   } catch (error) {
     console.log(error.message);
   }
 };
-
 
 //LOAD ALL PRODUCTS
 const loadShop = async (req, res) => {
   try {
     const userData1 = req.session.userdata;
     const categories = await Category.find();
-
-    // let productData = await Product.find({is_blocked: false});
-
-
     const options = {
       page: req.query.page || 1, // get current page number from query params
       limit: 8,
     };
-    
-    const result = await Product.paginate({}, options);
 
+    const result = await Product.paginate({}, options);
 
     res.render("users/shop", {
       productData: result,
       userData1,
-      categories
+      categories,
     });
   } catch (error) {
     console.log(error.message);
   }
 };
 
-
-
 //INTERCONNECTING CATEGORY, SEARCH, SORT first linking cat filter and search
-const interConnect = async(req, res) => {
+const interConnect = async (req, res) => {
   try {
-        
-    console.log(req.body,'req.bodyyyyyyyyyyyyyyyyyyyyy');
-    const catId =  req.body.categoryId
-
-        const shopData = await Product.find({category: catId, is_blocked: false});
-         console.log(shopData,'shopDataaaaaaaaaaaaaaaaaaa');
-
-     res.json({shopData}) 
-
-
+    const catId = req.body.categoryId;
+    const shopData = await Product.find({ category: catId, is_blocked: false });
+    res.json({ shopData });
   } catch (error) {
     console.log(error.message);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: "Server error" });
   }
 };
 
-
-
-
-
-
-
-
-
-
-
-//SEARCH 
-const search=async(req,res)=>{
+//SEARCH
+const search = async (req, res) => {
   try {
-    let search=''
-  
+    let search = "";
+    search = req.body.searchval.trim();
 
-    console.log('bodytytytyyyyyyyyyyyyyyyyy');
-    console.log(req.body);
-
-      console.log(req.body.searchval);
-      search= req.body.searchval.trim()
-
-      const catId=req.body.categoryId
-      if(catId){
- const shopData=await Product.find({is_blocked: false, $or:[{category:catId , name:{$regex:'.*'+ search +'.*',$options:'i'}}]})
- res.json({shopData})      
-}else
-{
-  const shopData=await Product.find({is_blocked: false, $or:[{name:{$regex:'.*'+ search +'.*',$options:'i'}}]})
-  res.json({shopData}) 
-}
-   
-
-   
-   
-
+    const catId = req.body.categoryId;
+    if (catId) {
+      const shopData = await Product.find({
+        is_blocked: false,
+        $or: [
+          {
+            category: catId,
+            name: { $regex: ".*" + search + ".*", $options: "i" },
+          },
+        ],
+      });
+      res.json({ shopData });
+    } else {
+      const shopData = await Product.find({
+        is_blocked: false,
+        $or: [{ name: { $regex: ".*" + search + ".*", $options: "i" } }],
+      });
+      res.json({ shopData });
+    }
   } catch (error) {
     console.log(error.message);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: "Server error" });
   }
-}
-
-
+};
 
 //SORT
 const sort = async (req, res) => {
   try {
-    const {id,categoryId} = req.body
-    console.log(req.body,'req.bodyyyyyyyyyyyyyyyyyyyyy');
+    const { id, categoryId } = req.body;
     let productData;
-    if (id === 'aToZ') {
-      if(categoryId){
-        productData = await Product.find({category:categoryId},{ is_blocked: false }).sort({ name: 1 });
-      }else{
-        productData = await Product.find({ is_blocked: false }).sort({ name: 1 });
+    if (id === "aToZ") {
+      if (categoryId) {
+        productData = await Product.find(
+          { category: categoryId },
+          { is_blocked: false }
+        ).sort({ name: 1 });
+      } else {
+        productData = await Product.find({ is_blocked: false }).sort({
+          name: 1,
+        });
       }
-      
-    } else if (id === 'zToA') {
-      if(categoryId){
-        productData = await Product.find({category:categoryId},{ is_blocked: false }).sort({ name: -1 });
-      }else{
-              productData = await Product.find({ is_blocked: false }).sort({ name: -1 });
+    } else if (id === "zToA") {
+      if (categoryId) {
+        productData = await Product.find(
+          { category: categoryId },
+          { is_blocked: false }
+        ).sort({ name: -1 });
+      } else {
+        productData = await Product.find({ is_blocked: false }).sort({
+          name: -1,
+        });
       }
-
-    } else if (id==='price-low-to-high'){
-      if(categoryId){
-              productData = await Product.find({category:categoryId},{ is_blocked: false }).sort({ price: 1 });
+    } else if (id === "price-low-to-high") {
+      if (categoryId) {
+        productData = await Product.find(
+          { category: categoryId },
+          { is_blocked: false }
+        ).sort({ price: 1 });
+      } else {
+        productData = await Product.find({ is_blocked: false }).sort({
+          price: 1,
+        });
       }
-      else{
-        productData = await Product.find({ is_blocked: false }).sort({ price: 1 });
+    } else if (id === "price-high-to-low") {
+      if (categoryId) {
+        productData = await Product.find(
+          { category: categoryId },
+          { is_blocked: false }
+        ).sort({ price: -1 });
+      } else {
+        productData = await Product.find({ is_blocked: false }).sort({
+          price: -1,
+        });
       }
-
-
-    } else if (id==='price-high-to-low'){
-      if(categoryId){
-        productData = await Product.find({category:categoryId},{ is_blocked: false }).sort({ price: -1 });
-      }else{
-         productData = await Product.find({ is_blocked: false }).sort({ price: -1 });
-      }
-     
-    } else if (id==='default'){
-      productData = await Product.find({ is_blocked: false })
+    } else if (id === "default") {
+      productData = await Product.find({ is_blocked: false });
+    } else {
+      return res.status(400).json({ error: "Invalid sort parameter" });
     }
-    else {
-      return res.status(400).json({ error: 'Invalid sort parameter' });
-    } 
 
-    res.json({productData});
+    res.json({ productData });
   } catch (error) {
     console.log(error.message);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
-
 
 //PRODUCT DETAILS LOAD
 const loadDetails = async (req, res) => {
@@ -377,25 +360,25 @@ const loadDetails = async (req, res) => {
 //USER PROFILE LOAD
 const loadProfile = async (req, res) => {
   try {
-    
     const userData1 = req.session.userdata;
-   const id= userData1._id
- 
-  
-    const userData=await User.findById(id)
+    const id = userData1._id;
 
-    if(userData.is_blocked){
-      res.redirect('/logout')
-    }else
-    {
+    const userData = await User.findById(id);
+
+    if (userData.is_blocked) {
+      res.redirect("/logout");
+    } else {
       const categories = await Category.find();
 
       const id = req.query.id;
       const userData = await User.findById(id);
-  
-      res.render("users/profile", { userData: userData, userData1, categories });
+
+      res.render("users/profile", {
+        userData: userData,
+        userData1,
+        categories,
+      });
     }
-   
   } catch (error) {
     console.log(error.message);
   }
@@ -408,11 +391,10 @@ const loadEditProfile = async (req, res) => {
 
     const id = req.query.id;
     const userData = await User.findById(id);
-    // console.log(userData);
 
     res.render("users/editprofile", {
       userData: userData,
-      userData1
+      userData1,
     });
   } catch (error) {
     console.log(error.message);
@@ -435,8 +417,7 @@ const editProfile = async (req, res) => {
       { new: true }
     );
 
-    // console.log('userData is here'+userData);
-    res.render("users/profile", { userData: userData, userData1});
+    res.render("users/profile", { userData: userData, userData1 });
   } catch (error) {
     console.log(error.message);
   }
@@ -450,7 +431,7 @@ const loadAddress = async (req, res) => {
 
     res.render("users/address", {
       userData1,
-      addressData: addressData
+      addressData: addressData,
     });
   } catch (error) {
     console.log(error.message);
@@ -518,7 +499,6 @@ const loadEditAddress = async (req, res) => {
 //EDIT ADDRESS
 const editAddress = async (req, res) => {
   try {
-    // const userData1 = req.session.userdata;
     const id = req.body.id;
     await Address.findByIdAndUpdate(
       { _id: id },
@@ -559,8 +539,6 @@ const orderHistory = async (req, res) => {
       .populate("items.product_id")
       .populate("shippingAddress")
       .sort({ dateOrdered: -1 });
-    // console.log("this is oorderdata");
-    // console.log(orderData);
 
     res.render("users/orderhistory", { userData1, orderData });
   } catch (error) {
@@ -584,54 +562,59 @@ const orderHistoryDetails = async (req, res) => {
     const orderDetail = await Order.findById(id)
       .populate("items.product_id")
       .populate("shippingAddress")
-      .populate("owner")
+      .populate("owner");
     //const itemsData = orderDetail.items;
 
     res.render("users/orderhistorydetails", {
       userData1,
-      orderDetail
+      orderDetail,
     });
   } catch (error) {
     console.log(error.message);
   }
 };
 
-
 //CANCEL ORDER
-const orderCancel=async(req,res)=>{
+const orderCancel = async (req, res) => {
   try {
-    const {id}=req.body
-    const updatedData=await Order.findByIdAndUpdate({_id:id},{status:"cancelled"},{ new: true })
-res.json(updatedData);
+    const { id } = req.body;
+    const updatedData = await Order.findByIdAndUpdate(
+      { _id: id },
+      { status: "cancelled" },
+      { new: true }
+    );
+    res.json(updatedData);
   } catch (error) {
     console.log(error.message);
   }
-}
+};
 
 //RETURN ORDER
-const orderReturn=async(req,res)=>{
+const orderReturn = async (req, res) => {
   try {
-    const {id}=req.body
-    const updatedData=await Order.findByIdAndUpdate({_id:id},{status:"returned"},{ new: true })
-res.json(updatedData);
+    const { id } = req.body;
+    const updatedData = await Order.findByIdAndUpdate(
+      { _id: id },
+      { status: "returned" },
+      { new: true }
+    );
+    res.json(updatedData);
   } catch (error) {
     console.log(error.message);
   }
-}
+};
 
 //DOWNLOAD INVOICE
 const invoiceDownload = async (req, res) => {
   try {
     const id = req.query.id;
-    const order = await Order.findOne({_id:id}).populate("items.product_id").populate("shippingAddress");
-console.log('down is orderrrrrrrrrrrrr');
-    console.log(order);
+    const order = await Order.findOne({ _id: id })
+      .populate("items.product_id")
+      .populate("shippingAddress");
 
     if (!order) {
       return res.status(404).send("Order not found");
     }
-
-
 
     // Create a new PDF document
     const doc = new PDFDocument({ font: "Helvetica" });
@@ -648,86 +631,93 @@ console.log('down is orderrrrrrrrrrrrr');
 
     // Add the order details to the PDF document
     doc
-  .fontSize(18)
-  .text(`ASHION STORE INVOICE`, { align: "center", lineGap: 20 }); // increase line gap for better spacing
+      .fontSize(18)
+      .text(`ASHION STORE INVOICE`, { align: "center", lineGap: 20 }); // increase line gap for better spacing
 
-doc.moveDown(2); // move down by 2 lines
+    doc.moveDown(2); // move down by 2 lines
 
-doc
-  .fontSize(16)
-  .text(`Order Summary - Order ID: ${order._id}`, { align: "center", lineGap: 10 }); // decrease line gap for tighter spacing
-doc.moveDown();
-doc
-  .fontSize(12)
-  .text("Product Name", { width: 380, continued: true });
-doc
-  .fontSize(12)
-  .text("Price", { width: 100, align: "center", continued: true });
-doc
-  .fontSize(12)
-  .text("Qty", { width: 50, align: "right" });
-doc.moveDown();
+    doc
+      .fontSize(10)
+      .text(`Order ID: ${order._id}`, { align: "left", lineGap: 10 }); // decrease line gap for tighter spacing
+    doc.moveDown();
+    doc.fontSize(12).text("Product Name", { width: 380, continued: true });
+    doc
+      .fontSize(12)
+      .text("Price", { width: 100, align: "center", continued: true });
+    doc.fontSize(12).text("Qty", { width: 50, align: "right" });
+    doc.moveDown();
 
-let totalPrice = 0;
-order.items.forEach((item, index) => {
-  doc
-    .fontSize(12)
-    .text(`${index + 1}. ${item.product_id.name}`, { width: 375, continued: true });
+    let totalPrice = 0;
+    order.items.forEach((item, index) => {
+      doc
+        .fontSize(12)
+        .text(`${index + 1}. ${item.product_id.name}`, {
+          width: 375,
+          continued: true,
+        });
 
+      const totalCost = item.product_id.price * item.quantity;
+      doc
+        .fontSize(12)
+        .text(`${totalCost}`, { width: 100, align: "center", continued: true });
 
-  const totalCost = item.product_id.price * item.quantity;
-  doc
-    .fontSize(12)
-    .text(`${totalCost}`, { width: 100, align: "center", continued: true });
+      doc.fontSize(12).text(`${item.quantity}`, { width: 50, align: "right" });
+      doc.moveDown();
+      totalPrice += totalCost;
+    });
 
+    doc.moveDown(2); // move down by 2 lines
 
+    doc.fontSize(12).text(`Subtotal: Rs ${totalPrice}`, { align: "right" });
+    doc.moveDown();
+    doc
+      .fontSize(12)
+      .text(`Total Amount after discount: Rs ${order.totalBill}`, {
+        align: "right",
+      });
+    doc.moveDown();
+    doc.fontSize(12).text(
+      `Ordered Date: ${order.dateOrdered.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })} ${order.dateOrdered.toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "numeric",
+      })}`,
+      { lineGap: 10 } // increase line gap for better spacing
+    );
+    doc.moveDown();
+    doc
+      .fontSize(12)
+      .text(`Payment Method: ${order.paymentMode}`, { lineGap: 10 });
+    doc.moveDown();
+    doc.fontSize(12).text(`Coupon : ${order.coupon}`, { lineGap: 10 });
+    doc.moveDown();
+    doc
+      .fontSize(12)
+      .text(`Discount Amount : ${order.discountAmt}`, { lineGap: 10 });
+    doc.moveDown();
+    doc
+      .fontSize(12)
+      .text(
+        `Shipping Address:\n ${order.shippingAddress.name},\n${order.shippingAddress.mobile},\n${order.shippingAddress.address1},\n${order.shippingAddress.address2},\n${order.shippingAddress.city}`,
+        { lineGap: 10 }
+      );
+    doc.moveDown();
+    doc.fontSize(12).text(`Order Status: ${order.status}`, { lineGap: 10 });
 
-  doc
-    .fontSize(12)
-    .text(`${item.quantity}`, { width: 50, align: "right" });
-  doc.moveDown();
-  totalPrice += totalCost;
-});
+    doc.moveDown(2); // move down by 2 lines
 
+    doc
+      .fontSize(14)
+      .text("Thank you for purchasing with us!", {
+        align: "center",
+        lineGap: 20,
+      });
 
+    doc.moveDown(); // move down by 1 line
 
-doc.moveDown(2); // move down by 2 lines
-
-doc.fontSize(12).text(`Subtotal: Rs ${totalPrice}`, { align: "right" });
-doc.moveDown();
-doc
-  .fontSize(12)
-  .text(`Total Amount after discount: Rs ${order.totalBill}`, { align: "right" });
-doc.moveDown();
-doc
-  .fontSize(12)
-  .text(
-    `Ordered Date: ${order.dateOrdered.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    })} ${order.dateOrdered.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "numeric",
-    })}`,
-    { lineGap: 10 } // increase line gap for better spacing
-  );
-doc.moveDown();
-doc.fontSize(12).text(`Payment Method: ${order.paymentMode }`, { lineGap: 10 });
-doc.moveDown();
-doc.fontSize(12).text(`Shipping Address:\n ${order.shippingAddress.name},\n${order.shippingAddress.mobile},\n${order.shippingAddress.address1},\n${order.shippingAddress.address2},\n${order.shippingAddress.city}`, { lineGap: 10 });
-doc.moveDown();
-doc.fontSize(12).text(`Order Status: ${order.status}`, { lineGap: 10 });
-
-doc.moveDown(2); // move down by 2 lines
-
-doc
-  .fontSize(14)
-  .text("Thank you for purchasing with us!", { align: "center", lineGap: 20 });
-
-doc.moveDown(); // move down by 1 line
-
-    
     // End the PDF document
     doc.end();
   } catch (error) {
@@ -735,11 +725,6 @@ doc.moveDown(); // move down by 1 line
     res.status(500).send("Server error");
   }
 };
-
-
-
-
-
 
 //USER LOGOUT
 const userlogout = async (req, res) => {
@@ -755,7 +740,6 @@ module.exports = {
   general,
   userLogin,
   userSignup,
-  // insertUser, instead createuser
   verifyLogin,
   loadotp,
   createUser,
@@ -766,7 +750,6 @@ module.exports = {
   loadDetails,
   loadShop,
   interConnect,
-  //categoryFilter,
   search,
   sort,
   loadProfile,
@@ -785,4 +768,3 @@ module.exports = {
   invoiceDownload,
   userlogout,
 };
-

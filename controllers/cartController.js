@@ -4,12 +4,10 @@ const Product = require("../models/productModel"); //mongodb category model
 const User = require("../models/userModel");
 const Address = require("../models/addressModel");
 const Order = require("../models/orderModel");
-const Coupon = require('../models/couponModel')
-const Razorpay = require('razorpay');
-//const moment = require('moment');
+const Coupon = require("../models/couponModel");
+const Razorpay = require("razorpay");
 const { log } = require("debug/src/node");
-
-
+const { formField } = require("pdfkit");
 
 //VIEW CART POPULATE
 const viewCart = async (req, res) => {
@@ -21,13 +19,6 @@ const viewCart = async (req, res) => {
     const categories = await Category.find();
     const cartData = user.cart;
 
-    //      console.log('cartdattaapricee',cartData.product_id.price);
-    // const price1=cartData.map((item)=>{
-    // return item.price
-    // })
-    // for (let i = 0; i < cartData.length; i++) {
-    //    console.log('pricwe1',cartData[i].product_id.price );
-    // }
     subTotal = findSubTotal(cartData);
 
     res.render("users/cart", { userData1, categories, subTotal, cartData });
@@ -50,8 +41,8 @@ const addToCart = async (req, res) => {
       const existed = await User.findOne({
         _id: userData1._id,
         "cart.product_id": productId,
-      });     
-      // console.log(existed);
+      });
+
 
       if (existed) {
         const updatedUser = await User.findOneAndUpdate(
@@ -63,13 +54,7 @@ const addToCart = async (req, res) => {
         //"cart.$.quantity" most likely means that the quantity of a certain item in the shopping cart is being accessed or manipulated using the jQuery library
 
         req.session.user = updatedUser; //che
-        // const userData = req.session.user;
 
-        // res.render("users/productdetails", {
-        //   userData: userData,
-        //   productData,
-        //   userData1,
-        // });
 
         res.render("users/productdetails", {
           productData: productData,
@@ -87,14 +72,6 @@ const addToCart = async (req, res) => {
           { new: true }
         );
         req.session.user = updatedUser;
-
-        // const userData = req.session.user;
-
-        // res.render("users/productdetails", {
-        //   userData: userData,
-        //   productData,
-        //   userData1,
-        // });
 
         res.render("users/productdetails", {
           productData: productData,
@@ -128,7 +105,7 @@ function findSubTotalCoupon(cartData, discount) {
   // Loop through each item in the shopping cart and add its price * quantity to the sum
   for (let i = 0; i < cartData.length; i++) {
     subTotalCoupon += cartData[i].product_id.price * cartData[i].quantity;
-    subTotalCoupon = subTotalCoupon - discount
+    subTotalCoupon = subTotalCoupon - discount;
   }
   return subTotalCoupon;
 }
@@ -187,57 +164,41 @@ const deleteFromCart = async (req, res) => {
 const couponCheck = async (req, res) => {
   try {
     const userData1 = req.session.userdata;
-    let coupon=''    
-    coupon=req.query.couponval.trim()
-    console.log(coupon,'coupon aftrr trimmmmmmm');
+    let coupon = "";
+    coupon = req.query.couponval.trim();  //FFFFFFFFFFFFFFFFF
 
-       total=req.query.total.trim()
-   console.log(total,'ttttoooottaallllllllll');
+    total = req.query.total.trim();
 
-const couponData=await Coupon.findOne({ code:coupon})
-console.log(couponData,'cccopondataa');
+    const couponData = await Coupon.findOne({ code: coupon });
 
-if (!couponData || couponData.length == 0) {
-  console.log('its not thereeeeeeeeeeeeeeeeeeeeeeeeeee');
-  //res.json({messsage:'Invalid Coupon'})
-  res.json({message: `invalid coupon`})
-}
+    if (!couponData || couponData.length == 0) {
+      res.json({ message: `invalid coupon` });
+    } else if (couponData.status == "inactive") {
+      res.json({ messsage: `Inactive Coupon` });
+    } else if (total < couponData.minBill) {
+      res.json({ message: `Minimum bill amount is Rs ${couponData.minBill}` });
+    } else if (couponData.userid.includes(userData1._id)) {
+      res.json({ message: `Coupon already used` });
+    } else {
+      const discount = couponData.discount;
 
-else if (couponData.status == 'inactive') {
-  res.json({messsage: `Inactive Coupon`})}
+      const newTotal = total - discount;
+      const success = true; //
 
-else if(total<couponData.minBill){
-  res.json({message: `Minimum bill amount is Rs ${couponData.minBill}`})}
+      couponData.userid.push(userData1._id);
+      await couponData.save();
 
-  else if(couponData.userid.includes(userData1._id)){
-  res.json({message: `Coupon already used`})}
-
-else{
-
-  const discount = couponData.discount;
-  console.log(discount,'discoooooooooooooooooooo');
-
-      const newTotal = total-discount
-      const success = true //
-      console.log(newTotal,'nnnnnnnnneww priiiceee');
-
-      couponData.userid.push(userData1._id)
-      await couponData.save()
-      //console.log(userData1._id);
-     res.json({message: 'Coupon applied successfully', discount, newTotal, success})
-    //  await Order.updateOne(
-    //   { _id: userData1._id },
-    //   { $set: {totalBill: newTotal} }
-    // );
-    
-
-}
-} catch (error) {
+      res.json({
+        message: "Coupon applied successfully",
+        discount,
+        newTotal,
+        success,
+      });
+    }
+  } catch (error) {
     console.log(error.message);
   }
 };
-
-
 
 //LOAD CHECKOUT
 const loadCheckout = async (req, res) => {
@@ -255,7 +216,6 @@ const loadCheckout = async (req, res) => {
 
     const addressData = address;
 
-    // req.session.subTotal=subTotal
     res.render("users/checkout", {
       userData1,
       cartData: cartData,
@@ -268,11 +228,15 @@ const loadCheckout = async (req, res) => {
   }
 };
 
-//PLACE ORDER
 
+//PLACE ORDERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
 const placeOrder = async (req, res) => {
   try {
     const userData1 = req.session.userdata;
+
+
+// console.log(('hostinggggggggdayy'));
+//     console.log(req.body);
 
     const user = await User.findOne({ _id: userData1._id }).populate(
       "cart.product_id"
@@ -280,7 +244,7 @@ const placeOrder = async (req, res) => {
     const cartData = user.cart; //check in model
 
     const paymentMethod = req.body.pay;
-   await Address.findOne({ _id: req.body.address1 });
+    await Address.findOne({ _id: req.body.address1 });
 
     const cartItems = cartData.map((item) => {
       return {
@@ -289,38 +253,22 @@ const placeOrder = async (req, res) => {
       };
     });
 
+
+//     console.log('req.body.totalAfterDiscounttttttttttttttttttttttttttttttttttttt');
+// console.log(req.body.totalAfterDiscount);
+
+console.log();
+     //TOTAL AFTER DISCOUNT
+    let finalTotal;
+    if (req.body.totalAfterDiscount) {
+      finalTotal = subTotal - req.body.totalAfterDiscount;
+    } else {
+      finalTotal = subTotal;
+    }
+
     
-let finalTotal   //TOTAL AFTER DISCOUNT
-      if(req.body.totalAfterDiscount) {
-       finalTotal =  subTotal - req.body.totalAfterDiscount
-      } else {
-        finalTotal = subTotal
-      }
 
     if (paymentMethod == "cashondelivery") {
-      if (cartData.length > 0) {
-          const order = new Order({
-          owner: userData1._id, 
-          items: cartItems,
-          shippingAddress: req.body.address1, 
-          totalBill: finalTotal, 
-          status: req.body.status, 
-          paymentMode: paymentMethod, 
-          dateOrdered: req.body.dateOrdered, 
-        });
-
-        await order.save();
-        user.cart = []; //emptying the cart
-       await user.save();
-        //const newuserData = await user.save();
-        // req.session.userData = newuserData;
-
-        res.render("users/ordersuccess", { userData: req.session.userdata });
-      } else {
-        res.redirect("/shop");
-      }
-    } else {
-
       if (cartData.length > 0) {
         const order = new Order({
           owner: userData1._id,
@@ -328,21 +276,50 @@ let finalTotal   //TOTAL AFTER DISCOUNT
           shippingAddress: req.body.address1,
           totalBill: finalTotal,
           status: req.body.status,
-          paymentMode: 'razorpay',
+          paymentMode: paymentMethod,
           dateOrdered: req.body.dateOrdered,
+
+          discountAmt:req.body.totalAfterDiscount,
+          coupon:req.body.search
+
         });
 
-        console.log('thisizzorderrrrrrrrrrrrrr',order);
+        await order.save();
+        user.cart = []; //emptying the cart
+        await user.save();
+
+        res.render("users/ordersuccess", { userData: req.session.userdata });
+      } else {
+        res.redirect("/shop");
+      }
+    } else {
+      if (cartData.length > 0) {
+        const order = new Order({
+          owner: userData1._id,
+          items: cartItems,
+          shippingAddress: req.body.address1,
+          totalBill: finalTotal,
+          status: req.body.status,
+          paymentMode: "razorpay",
+          dateOrdered: req.body.dateOrdered,
+
+          
+          discountAmt:req.body.totalAfterDiscount,
+          coupon:req.body.search
+        });
+
 
         await order.save();
-        user.cart = [];  //emptying the cart
-        const orderid=order._id //check
-      await user.save();
-        // const newuserData = await user.save();
-        // req.session.userData = newuserData;
-        console.log(finalTotal, 361111111111111111);
-        
-          res.render("users/razorpaypreview", { userData1,totalbill:finalTotal,cartData,orderId:orderid}); 
+        user.cart = []; //emptying the cart
+        const orderid = order._id; //check
+        await user.save();
+
+        res.render("users/razorpaypreview", {
+          userData1,
+          totalbill: finalTotal,
+          cartData,
+          orderId: orderid,
+        });
       } else {
         res.redirect("/shop");
       }
@@ -353,50 +330,138 @@ let finalTotal   //TOTAL AFTER DISCOUNT
 };
 
 
+
+
+
+//PLACE ORDER   WORKING
+
+// const placeOrder = async (req, res) => {
+//   try {
+//     const userData1 = req.session.userdata;
+
+//     const user = await User.findOne({ _id: userData1._id }).populate(
+//       "cart.product_id"
+//     ); //populating User model's cart array with product_id
+//     const cartData = user.cart; //check in model
+
+//     const paymentMethod = req.body.pay;
+//     await Address.findOne({ _id: req.body.address1 });
+
+//     const cartItems = cartData.map((item) => {
+//       return {
+//         product_id: item.product_id, //product_id frm order model, to show diff items in an order
+//         quantity: item.quantity,
+//       };
+//     });
+
+
+//      //TOTAL AFTER DISCOUNT
+//     let finalTotal;
+//     if (req.body.totalAfterDiscount) {
+//       finalTotal = subTotal - req.body.totalAfterDiscount;
+//     } else {
+//       finalTotal = subTotal;
+//     }
+
+//     if (paymentMethod == "cashondelivery") {
+//       if (cartData.length > 0) {
+//         const order = new Order({
+//           owner: userData1._id,
+//           items: cartItems,
+//           shippingAddress: req.body.address1,
+//           totalBill: finalTotal,
+//           status: req.body.status,
+//           paymentMode: paymentMethod,
+//           dateOrdered: req.body.dateOrdered,
+//         });
+
+//         await order.save();
+//         user.cart = []; //emptying the cart
+//         await user.save();
+
+//         res.render("users/ordersuccess", { userData: req.session.userdata });
+//       } else {
+//         res.redirect("/shop");
+//       }
+//     } else {
+//       if (cartData.length > 0) {
+//         const order = new Order({
+//           owner: userData1._id,
+//           items: cartItems,
+//           shippingAddress: req.body.address1,
+//           totalBill: finalTotal,
+//           status: req.body.status,
+//           paymentMode: "razorpay",
+//           dateOrdered: req.body.dateOrdered,
+//         });
+
+//         console.log("thisizzorderrrrrrrrrrrrrr", order);
+
+//         await order.save();
+//         user.cart = []; //emptying the cart
+//         const orderid = order._id; //check
+//         await user.save();
+
+//         res.render("users/razorpaypreview", {
+//           userData1,
+//           totalbill: finalTotal,
+//           cartData,
+//           orderId: orderid,
+//         });
+//       } else {
+//         res.redirect("/shop");
+//       }
+//     }
+//   } catch (error) {
+//     console.log(error.message);
+//   }
+// };
+
 //PAYMENT
 
-const orderPayment=async(req,res)=>{
+const orderPayment = async (req, res) => {
   try {
     const userData1 = req.session.userdata;
     const instance = new Razorpay({
       key_id: process.env.RAZORPAY_ID,
-      key_secret: process.env.RAZORPAY_SECRET
+      key_secret: process.env.RAZORPAY_SECRET,
     });
 
-    const {amount} = req.body //check
-    console.log('amount'+amount);
+    const { amount } = req.body; //check
+    console.log("amount" + amount);
 
     let options = {
-      amount: amount,  // amount in the smallest currency unit req.body.amount 
+      amount: amount, // amount in the smallest currency unit req.body.amount
       currency: "INR",
-      receipt: "rcp1"
+      receipt: "rcp1",
     };
     instance.orders.create(options, function (err, order) {
-console.log(order);
-      res.send({ orderId: order.id }) //extract id value and send to checkout
+      console.log(order);
+      res.send({ orderId: order.id }); //extract id value and send to checkout
     });
-
   } catch (error) {
     console.log(error.message);
   }
-}
-
+};
 
 //PAYMENT VERIFY
 
 const paymentverify = async (req, res) => {
-
-  let body = req.body.response.razorpay_order_id + "|" + req.body.response.razorpay_payment_id;
+  let body =
+    req.body.response.razorpay_order_id +
+    "|" +
+    req.body.response.razorpay_payment_id;
 
   let crypto = require("crypto");
-  let expectedSignature = crypto.createHmac('sha256', 'GRmORCyd375pS5XzZjVS4Rlz')
+  let expectedSignature = crypto
+    .createHmac("sha256", "GRmORCyd375pS5XzZjVS4Rlz")
     .update(body.toString())
-    .digest('hex');
+    .digest("hex");
   console.log("sig received ", req.body.response.razorpay_signature);
   console.log("sig generated ", expectedSignature);
-  let response = { "signatureIsValid": "false" }
+  let response = { signatureIsValid: "false" };
   if (expectedSignature === req.body.response.razorpay_signature)
-    response = { "signatureIsValid": "true" }
+    response = { signatureIsValid: "true" };
   res.send(response);
 };
 
@@ -420,5 +485,5 @@ module.exports = {
   loadOrderSuccess,
   placeOrder,
   orderPayment,
-  paymentverify
+  paymentverify,
 };
